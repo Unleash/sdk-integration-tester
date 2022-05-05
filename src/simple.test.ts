@@ -28,7 +28,7 @@ describe.each([
     {toggleName: 'test-gradual', userId: '44',  enabled: false},
     {toggleName: 'test-gradual', userId: '57',  enabled: false},
     {toggleName: 'test-gradual', userId: '56',  enabled: true},
-  ])('.isEnabled', ({toggleName, userId, enabled}) => {
+  ])(`${URL}:isEnabled`, ({toggleName, userId, enabled}) => {
     test(`'${toggleName}' should be ${enabled ? 'enabled' : 'disabled'} for userId=${userId}`, async () => {
         const { body, statusCode } = await got.get(`${URL}/is-enabled/${toggleName}?userId=${userId}`);
     
@@ -46,7 +46,7 @@ describe.each([
     {toggle: 'test-variant', userId: '123', variant: 'blue'},
     {toggle: 'test-variant', userId: '445', variant: 'red'},
     {toggle: 'test-variant', userId: '444', variant: 'blue'},
-  ])('.getVariant', ({toggle, userId, variant}) => {
+  ])(`${URL}:getVariant`, ({toggle, userId, variant}) => {
     test(`'${toggle}' should be ${variant} for userId=${userId}`, async () => {
         const { body, statusCode } = await got.get(`${URL}/variant/${toggle}?userId=${userId}`);
     
