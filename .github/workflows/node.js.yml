@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        sdk-url: [https://node-sdk-test-server.herokuapp.com]
+        sdk-url: ["https://node-sdk-test-server.herokuapp.com"]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
