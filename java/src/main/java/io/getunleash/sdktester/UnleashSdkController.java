@@ -26,7 +26,7 @@ public class UnleashSdkController {
         this.unleash = unleash;
     }
 
-    @GetMapping("/ready")
+    @GetMapping(value = {"/", "/ready"})
     public ReadyStatus ready() {
         return new ReadyStatus("ok");
     }

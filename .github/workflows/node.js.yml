@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        sdk-url: ["https://node-sdk-test-server.herokuapp.com"]
+        sdk-url: ["https://node-sdk-test-server.herokuapp.com", "https://unleash-java-tester.herokuapp.com"]
 
     steps:
     - uses: actions/checkout@v3

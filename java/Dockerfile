@@ -4,6 +4,9 @@ WORKDIR /javatester
 
 COPY gradle /javatester/gradle
 COPY build.gradle gradlew settings.gradle /javatester/
+
+RUN ./gradlew tasks
+
 COPY src /javatester/src
 
 RUN ./gradlew bootJar
