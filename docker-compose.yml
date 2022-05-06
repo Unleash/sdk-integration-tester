@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  node:
+    build: ./node
+    ports:
+      - "3000:3000"
+
+  java:
+    build: ./java
+    ports:
+      - "5100:5100"
+    environment:
+      PORT: 5100
