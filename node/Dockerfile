@@ -11,7 +11,8 @@ ENV NODE_ENV production
 
 WORKDIR /unleash
 
-COPY . .
+COPY --from=builder /unleash/node_modules /unleash/node_modules
+COPY package.json yarn.lock index.js /unleash
 
 USER node
 
