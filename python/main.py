@@ -2,12 +2,13 @@ from cgitb import enable
 from flask import Flask, jsonify, make_response, request
 from UnleashClient import UnleashClient
 from typing import *
+from os import getenv
 
 app = Flask(__name__)
 
 API_KEY = "test-server:default.8a090f30679be7254af997864d66b86e44dcfc5291916adff72a0fb5"
 API_URL = "https://app.unleash-hosted.com/demo/api"
-
+port = getenv("PORT") or "5000"
 
 client = UnleashClient(
     url=API_URL,
@@ -58,4 +59,4 @@ def get_variant(toggle_name):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=port)
