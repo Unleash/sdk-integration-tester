@@ -5,28 +5,32 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        sdk-url: ["https://node-sdk-test-server.herokuapp.com", "https://unleash-java-tester.herokuapp.com"]
+        sdk-url:
+          [
+            "https://node-sdk-test-server.herokuapp.com",
+            "https://unleash-java-tester.herokuapp.com",
+            "https://unleash-python-tester.herokuapp.com",
+          ]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Test ${{ matrix.sdk-url }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-        cache: 'npm'
-    - run: yarn install
-    - run: yarn test
-      env:
-        CI: true,
-        SDK_URL: ${{ matrix.sdk-url }}
+      - uses: actions/checkout@v3
+      - name: Test ${{ matrix.sdk-url }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "npm"
+      - run: yarn install
+      - run: yarn test
+        env:
+          CI: true,
+          SDK_URL: ${{ matrix.sdk-url }}
