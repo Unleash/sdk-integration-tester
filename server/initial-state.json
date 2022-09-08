@@ -1,0 +1,138 @@
+{
+    "version": 1,
+    "features": [
+      {
+        "name": "test-gradual",
+        "type": "release",
+        "project": "test-server",
+        "enabled": true,
+        "stale": false,
+        "impressionData": false,
+        "environments": [
+          {
+            "name": "default",
+            "type": "production",
+            "enabled": true,
+            "protected": true,
+            "sortOrder": 0
+          }
+        ],
+        "strategies": [
+          {
+            "name": "flexibleRollout",
+            "sortOrder": 0,
+            "constraints": [],
+            "parameters": {
+                "groupId": "test-gradual",
+                "rollout": "50",
+                "stickiness": "default"
+            }
+          }
+        ],
+        "variants": []
+      },
+      {
+        "name": "test-on",
+        "type": "release",
+        "project": "test-server",
+        "enabled": true,
+        "stale": false,
+        "impressionData": false,
+        "environments": [
+          {
+            "name": "default",
+            "type": "production",
+            "enabled": true,
+            "protected": true,
+            "sortOrder": 0
+          }
+        ],
+        "strategies": [
+          {
+            "name": "default",
+            "sortOrder": 0,
+            "constraints": [            {
+                "values": [
+                  "123"
+                ],
+                "inverted": false,
+                "operator": "IN",
+                "contextName": "userId",
+                "caseInsensitive": false
+              }
+            ],
+            "parameters": {}
+          }
+        ],
+        "variants": []
+      },
+      {
+        "name": "test-variant",
+        "type": "release",
+        "project": "test-server",
+        "enabled": true,
+        "stale": false,
+        "impressionData": false,
+        "environments": [
+          {
+            "name": "default",
+            "type": "production",
+            "enabled": true,
+            "protected": true,
+            "sortOrder": 0
+          }
+        ],
+        "strategies": [
+            {
+                "name": "default",
+                "constraints": [],
+                "parameters": {},
+                "sortOrder": 9999
+              }      
+        ],
+        "variants": [
+            {
+                "name": "red",
+                "weight": 500,
+                "weightType": "variable",
+                "stickiness": "default",
+                "payload": {
+                    "type": "json",
+                    "value": "{\"color\": \"red\"}"
+                },
+                "overrides": []
+            },
+            {
+                "name": "blue",
+                "weight": 500,
+                "weightType": "variable",
+                "stickiness": "default",
+                "overrides": [
+                  {
+                    "contextName": "userId",
+                    "values": [
+                      "123"
+                    ]
+                  }
+                ]
+              }
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "id": "test-server-id",
+        "name": "test-server",
+        "description": "For testing"
+      }
+    ],
+    "environments": [
+      {
+        "name": "default",
+        "type": "production",
+        "enabled": true,
+        "protected": true,
+        "sortOrder": 0
+      }
+    ]
+  }
