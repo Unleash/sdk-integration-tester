@@ -1,4 +1,5 @@
 ## Running the tests:
+**Note:** Before running the tests it's necessary to run `yarn` to install the dependencies
 1. `docker compose up`
 2. `yarn test`
 3. After stopping docker compose, do a clean-up: `docker compose rm -f && docker rmi server_node:latest`
