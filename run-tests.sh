@@ -10,11 +10,12 @@ echo "Now server is setup"
 for i in 'node 3000' 'java 5100' 'python 5000'; do
     SDK=( $i )
     docker compose up --build -d ${SDK[0]}
-    while ! curl -s -o /dev/null localhost:${SDK[1]}; do
-	    echo "Waiting ${SDK[0]} [$1]"
+    SDK_URL=http://localhost:${SDK[1]}
+    while ! curl -s -o /dev/null ${SDK_URL}; do
+	    echo "Waiting ${SDK_URL}"
 	    sleep 1
     done
-    SDK_URL=http://localhost:${SDK[1]} yarn test
+    SDK_URL=${SDK_URL} yarn test
     docker compose stop ${SDK[0]} &
 done
 
