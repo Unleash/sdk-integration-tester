@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 docker compose up -d postgres unleash-server initializer
 
 while [ "$(docker compose ps --format=json --status exited initializer)" == "null" ]; do
