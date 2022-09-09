@@ -2,6 +2,8 @@
 **Note:** Before running the tests it's necessary to run `yarn` to install the dependencies
 1. `./run-tests.sh`
 
+This may take some time the first time you run it
+
 ### Troubleshooting
 First try to cleanup: `docker compose rm -f`
 
