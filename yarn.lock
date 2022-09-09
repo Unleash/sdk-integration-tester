@@ -697,6 +697,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@unleash/client-specification@^4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@unleash/client-specification/-/client-specification-4.2.2.tgz#01fef308227bce8ab5ab98abf881e342e5d24558"
+  integrity sha512-HMpnZqX5M1LgFK7UgGkuy47vzAFKV3NxTw6yuAxTpMgESt0OGwXKHWlWAla2Es+EalEVxMgBoTs7WHrl9Rhfqw==
+
 ansi-escapes@^4.2.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.2.tgz#6b2291d1db7d98b6521d5f1efa42d0f3a9feb65e"
