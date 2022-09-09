@@ -1,10 +1,10 @@
 ## Running the tests:
 **Note:** Before running the tests it's necessary to run `yarn` to install the dependencies
-1. `docker compose up`
-2. `yarn test`
-3. After stopping docker compose, do a clean-up: `docker compose rm -f && docker rmi server_node:latest`
+1. `./run-tests.sh`
 
+This may take some time the first time you run it
 
-**TODO:**
-1. Delete the initial admin token (optional because this environment is ephimeral)
-`curl -XDELETE -H 'Content-Type: application/json' -H 'Authorization: *:*.unleash-insecure-admin-api-token' localhost:4242/api/admin/api-tokens/*:*.unleash-insecure-admin-api-token`
+### Troubleshooting
+First try to cleanup: `docker compose rm -f`
+
+If that does not work, you may have to manually delete the docker images (`docker images`) related with this project (`docker rmi <image>`)
