@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/workflows/unleash-server.yml
+      - uses: ${{ github.workspace }}/.github/workflows/unleash-server.yml
       - name: Test ${{ matrix.sdk.container }} with ${{ matrix.server }}
         run: ./server/run-test.sh ${{ matrix.sdk.container}} ${{ matrix.sdk.port}}
       - name: Clean up
