@@ -10,20 +10,14 @@ on:
     branches: [main, gh-action]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Hello" > world.txt
   integration:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
       matrix:
         server: [ "latest", "4.14.5", "4.13"]
 
     steps:
-      - run: cat world.txt
       - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
