@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    uses: ./gihub/workflows/unleash-server.yml
+    uses: ./.github/workflows/unleash-server.yml
 
     strategy:
       matrix:
