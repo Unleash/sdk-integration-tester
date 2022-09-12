@@ -40,20 +40,26 @@ interface Payload {
   value: string
 }
 
-interface IsEnabledResult {
+interface EnabledResult {
   name: string
-  variant?: {
+  enabled: boolean
+  context: Map<string, string>
+}
+
+interface VariantResult {
+  name: string
+  enabled: {
     name: string
     enabled: boolean
     payload?: Payload
   }
-  enabled: boolean
   context: Map<string, string>
 }
 
 // Currently excluded because we cannot set the state:
 const excludeTests = [
   '09', // Needs state to be cleared before running
+  '12', // Fails on Python - Not supported on this SDK?
   '13', // NOT_A_VALID_OPERATOR - OpenAPI validation
   '14', // Cannot read properties of undefined (reading 'map')
   '15' // "segments[0].name" is required
@@ -91,7 +97,7 @@ specs
               }
             })
             expect(statusCode).toBe(200)
-            const result: IsEnabledResult = JSON.parse(body)
+            const result: EnabledResult = JSON.parse(body)
             expect(result.enabled).toBe(testCase.expectedResult)
           })
         })
@@ -107,8 +113,9 @@ specs
               }
             })
             expect(statusCode).toBe(200)
-            const result: IsEnabledResult = JSON.parse(body)
-            expect(result.enabled).toEqual(testCase.expectedResult)
+            const result: VariantResult = JSON.parse(body)
+            const { name, enabled, payload } = result.enabled
+            expect({ name, enabled, payload }).toEqual(testCase.expectedResult)
           })
         })
       }

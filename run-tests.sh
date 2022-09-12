@@ -8,7 +8,7 @@ while [ "$(docker compose ps --format=json --status exited initializer)" == "nul
 done
 echo "Now server is setup"
 
-for i in 'node 3000' 'java 5100' 'python 5000'; do
+for i in 'node 3000' 'java 5100' 'python 5001'; do
     SDK=( $i )
     docker compose up --build -d ${SDK[0]}
     SDK_URL=http://localhost:${SDK[1]}
