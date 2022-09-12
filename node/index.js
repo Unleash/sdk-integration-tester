@@ -44,17 +44,6 @@ fastify.get('/', async (req, reply) => {
   }
 })
 
-// is-enabled
-fastify.get('/is-enabled/:toggleName', async req => {
-  const f = req.params.toggleName
-  const context = { ...req.query }
-  return {
-    name: f,
-    enabled: unleash.isEnabled(f, context),
-    context
-  }
-})
-
 // TODO: implement in the other languages as well
 fastify.post('/is-enabled', async req => {
   const { toggle, context } = req.body
@@ -71,16 +60,6 @@ fastify.post('/variant', async req => {
   return {
     name: toggle,
     enabled: unleash.getVariant(toggle, context),
-    context
-  }
-})
-
-fastify.get('/variant/:toggleName', async req => {
-  const f = req.params.toggleName
-  const context = { ...req.query }
-  return {
-    name: f,
-    variant: unleash.getVariant(f, context),
     context
   }
 })
