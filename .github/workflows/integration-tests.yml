@@ -5,9 +5,7 @@ name: Integration tests
 
 on:
   push:
-    branches: [main, gh-action]
   pull_request:
-    branches: [main, gh-action]
 
 jobs:
   integration:
