@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: 16.x
           cache: "npm"
+      - run: yarn install
       - run: docker version
       - run: docker compose version
       - run: ./run-tests.sh
