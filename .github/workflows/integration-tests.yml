@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        server: [ "latest", "4.14", "4.13"]
+        server: [ "latest", "4.14.5", "4.13"]
 
     steps:
       - uses: actions/checkout@v3
