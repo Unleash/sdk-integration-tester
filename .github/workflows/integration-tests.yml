@@ -16,6 +16,11 @@ jobs:
     strategy:
       matrix:
         server: [ "latest", "4.14.5", "4.13"]
+        sdk: [
+          {container: node, port: 3000},
+          {container: python, port: 5000},
+          {container: java, port: 5100},
+        ]
 
     steps:
       - uses: actions/checkout@v3
@@ -30,12 +35,8 @@ jobs:
       - name: Await initialization
         run: ./server/wait-container-exit.sh initializer
 
-      - name: Test Node SDK with ${{ matrix.server }}
-        run: ./server/run-test.sh node 3000
-      - name: Test Python SDK with ${{ matrix.server }}
-        run: ./server/run-test.sh python 5000
-      - name: Test Java SDK with ${{ matrix.server }}
-        run: ./server/run-test.sh java 5100
+      - name: Test ${{ matrix.sdk.container }} SDK with ${{ matrix.server }}
+        run: ./server/run-test.sh ${{ matrix.sdk.container }} ${{ matrix.sdk.port }}
 
       - name: Clean up
         run: docker compose stop postgres unleash-server initializer
