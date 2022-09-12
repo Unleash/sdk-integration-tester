@@ -6,6 +6,8 @@ name: Integration tests
 on:
   push:
   pull_request:
+  schedule: 
+    - cron: '30 5 * * 1-5'
 
 jobs:
   integration:
