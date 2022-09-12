@@ -3,8 +3,6 @@ package io.getunleash.sdktester;
 
 import io.getunleash.Unleash;
 import io.getunleash.UnleashContext;
-import io.getunleash.Variant;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 @RestController
 public class UnleashSdkController {
@@ -33,6 +30,9 @@ public class UnleashSdkController {
     public UnleashContext buildContext(Map<String, String> params) {
         UnleashContext.Builder builder = UnleashContext.builder()
                 .currentTime(ZonedDateTime.now());
+        if (params == null) {
+            params = new HashMap<>();
+        }
         if (params.containsKey("Host")) {
             builder = builder.remoteAddress(params.get("Host"));
         }
@@ -59,7 +59,9 @@ public class UnleashSdkController {
     }
 
     @PostMapping("/is-enabled")
-    public IsEnabled isEnabled(@RequestBody String toggle, @RequestBody Map<String, String> requestContext) {
+    public IsEnabled isEnabled(@RequestBody io.getunleash.sdktester.RequestBody body) {
+        String toggle = body.toggle;
+        Map<String, String> requestContext = body.context;
         UnleashContext context = buildContext(requestContext);
         return new IsEnabled(
                 toggle,
@@ -69,7 +71,9 @@ public class UnleashSdkController {
     }
 
     @PostMapping("/variant")
-    public VariantResponse getVariant(@RequestBody String toggle, @RequestBody Map<String, String> requestContext) {
+    public VariantResponse getVariant(@RequestBody io.getunleash.sdktester.RequestBody body) {
+        String toggle = body.toggle;
+        Map<String, String> requestContext = body.context;
         UnleashContext context = buildContext(requestContext);
         return new VariantResponse(
                 toggle,
