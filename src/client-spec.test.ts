@@ -3,6 +3,8 @@ import got from 'got'
 
 const URL = process.env.SDK_URL || 'http://localhost:3000'
 const UNLEASH_URL = process.env.UNLEASH_URL || 'http://localhost:4242'
+const UNLEASH_TOKEN =
+  process.env.UNLEASH_TOKEN || '*:*.unleash-insecure-admin-api-token'
 
 interface IVariantTest {
   description: string
@@ -71,7 +73,7 @@ specs
           `${UNLEASH_URL}/api/admin/state/import`,
           {
             headers: {
-              Authorization: '*:*.unleash-insecure-admin-api-token'
+              Authorization: UNLEASH_TOKEN
             },
             json: definition.state
           }
