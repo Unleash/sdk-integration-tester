@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, gh-action]
   pull_request:
-    branches: [main]
+    branches: [main, gh-action]
 
 jobs:
   build:
@@ -17,9 +17,7 @@ jobs:
       matrix:
         sdk-url:
           [
-            "https://node-sdk-test-server.herokuapp.com",
-            "https://unleash-java-tester.herokuapp.com",
-            "https://unleash-python-tester.herokuapp.com",
+            "all",
           ]
 
     steps:
@@ -29,8 +27,5 @@ jobs:
         with:
           node-version: 16.x
           cache: "npm"
-      - run: yarn install
-      - run: yarn test
-        env:
-          CI: true,
-          SDK_URL: ${{ matrix.sdk-url }}
+      - run: docker version
+      - run: docker compose version
