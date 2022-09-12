@@ -28,7 +28,7 @@ services:
       - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
 
   unleash-server:
-    image: unleashorg/unleash-server:latest
+    image: unleashorg/unleash-server:${UNLEASH_SERVER_VERSION:-latest}
     environment:
       DATABASE_HOST: postgres
       DATABASE_NAME: unleash

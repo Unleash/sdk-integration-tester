@@ -1,0 +1,56 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Integration tests
+
+on:
+  push:
+  pull_request:
+  schedule: 
+    - cron: '30 5 * * 1-5'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server:
+          - https://node-sdk-test-server.herokuapp.com
+          - https://unleash-java-tester.herokuapp.com
+          - https://unleash-python-tester.herokuapp.com
+    steps:
+      - run: echo "Should cache docker images ${{ matrix.server }}"
+  integration:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 10
+      matrix:
+        server: 
+          - latest
+#          - 4.14.5
+          - 4.13
+        sdk: [
+          {container: node, port: 3000},
+          {container: python, port: 5000},
+          {container: java, port: 5100},
+        ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "npm"
+      - run: yarn install
+      - name: Setup unleash server
+        run: UNLEASH_SERVER_VERSION=${{ matrix.server }} docker compose up -d postgres unleash-server initializer
+      - name: Await initialization
+        run: ./server/wait-container-exit.sh initializer
+
+      - name: Test ${{ matrix.sdk.container }} SDK with ${{ matrix.server }}
+        run: ./server/run-test.sh ${{ matrix.sdk.container }} ${{ matrix.sdk.port }}
+
+      - name: Clean up
+        run: docker compose stop postgres unleash-server initializer
