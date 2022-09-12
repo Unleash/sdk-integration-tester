@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    uses: ./gihub/workflows/unleash-server.yml
 
     strategy:
       matrix:
@@ -23,17 +23,6 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: "npm"
-      - run: yarn install
-      - name: Setup unleash server
-        run: docker compose up -d postgres unleash-server initializer
-      - name: Await initialization
-        run: ./server/wait-container-exit.sh initializer
       - name: Test ${{ matrix.sdk.container }} with ${{ matrix.server }}
         run: ./server/run-test.sh ${{ matrix.sdk.container}} ${{ matrix.sdk.port}}
       - name: Clean up
