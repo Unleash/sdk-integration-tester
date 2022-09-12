@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 5
       matrix:
-        max-parallel: 5
         server: [ "latest", "4.14.5", "4.13"]
         sdk: [
           {container: node, port: 3000},
