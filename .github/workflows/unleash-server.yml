@@ -1,7 +1,7 @@
 name: Unleash server
 
 on:
-  reusable_workflow_job:
+  workflow_call:
 
 jobs:
   build:
