@@ -8,12 +8,24 @@ services:
     environment:
       - UNLEASH_URL=http://unleash-server:4242/api
       - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
+
   java:
     build: ./java
     ports:
       - "5100:5100"
     environment:
-      PORT: 5100
+      - PORT=5100
+      - UNLEASH_URL=http://unleash-server:4242/api
+      - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
+
+  python:
+    build: ./python
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - UNLEASH_URL=http://unleash-server:4242/api
+      - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
 
   unleash-server:
     image: unleashorg/unleash-server:latest
@@ -23,7 +35,7 @@ services:
       DATABASE_USERNAME: unleash_user
       DATABASE_PASSWORD: unleash.the.password
       DATABASE_SSL: false
-      INIT_CLIENT_API_TOKENS: "default:development.unleash-insecure-api-token"
+      INIT_CLIENT_API_TOKENS: "test-server:development.unleash-insecure-api-token"
       INIT_ADMIN_API_TOKENS: "*:*.unleash-insecure-admin-api-token"
       LOG_LEVEL: info
     ports: 

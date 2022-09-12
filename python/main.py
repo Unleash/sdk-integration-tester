@@ -6,9 +6,9 @@ from os import getenv
 
 app = Flask(__name__)
 
-API_KEY = "test-server:default.8a090f30679be7254af997864d66b86e44dcfc5291916adff72a0fb5"
-API_URL = "https://app.unleash-hosted.com/demo/api"
-port = getenv("PORT") or "5000"
+API_KEY = getenv("UNLEASH_API_TOKEN") or "test-server:default.8a090f30679be7254af997864d66b86e44dcfc5291916adff72a0fb5"
+API_URL = getenv("UNLEASH_URL") or "https://app.unleash-hosted.com/demo/api"
+port = getenv("PORT") or "5001"
 
 client = UnleashClient(
     url=API_URL,
@@ -28,29 +28,30 @@ def respond_ok():
     )
 
 
-@app.route("/is-enabled/<string:toggle_name>")
-def is_enabled(toggle_name: str):
-    context = request.args.to_dict()
+@app.route("/is-enabled", methods=["POST"])
+def is_enabled():
+    toggle = request.json.get("toggle")
+    context = request.json.get("context")
     return make_response(
         jsonify(
             {
-                "name": toggle_name,
-                "enabled": client.is_enabled(toggle_name, context),
+                "name": toggle,
+                "enabled": client.is_enabled(toggle, context),
                 "context": context,
             }
         ),
         200,
     )
 
-
-@app.route("/variant/<toggle_name>")
-def get_variant(toggle_name):
-    context = request.args.to_dict()
+@app.route("/variant", methods=["POST"])
+def get_variant():
+    toggle = request.json.get("toggle")
+    context = request.json.get("context")
     return make_response(
         jsonify(
             {
-                "name": toggle_name,
-                "variant": client.get_variant(toggle_name, context),
+                "name": toggle,
+                "enabled": client.get_variant(toggle, context),
                 "context": context,
             }
         ),

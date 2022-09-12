@@ -6,9 +6,8 @@ import io.getunleash.UnleashContext;
 import io.getunleash.Variant;
 import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
@@ -59,29 +58,23 @@ public class UnleashSdkController {
         return builder.build();
     }
 
-    @GetMapping("/is-enabled/{toggle}")
-    public IsEnabled isEnabled(@PathVariable("toggle") String toggleName, @RequestParam Map<String, String> params, @RequestHeader Map<String, String> headers) {
-        HashMap<String, String> requestContext = new HashMap<>();
-        requestContext.putAll(headers);
-        requestContext.putAll(params);
+    @PostMapping("/is-enabled")
+    public IsEnabled isEnabled(@RequestBody String toggle, @RequestBody Map<String, String> requestContext) {
         UnleashContext context = buildContext(requestContext);
         return new IsEnabled(
-                toggleName,
-                unleash.isEnabled(toggleName, context),
-                params
+                toggle,
+                unleash.isEnabled(toggle, context),
+                requestContext
         );
     }
 
-    @GetMapping("/variant/{toggle}")
-    public VariantResponse getVariant(@PathVariable("toggle") String toggleName, @RequestParam Map<String, String> params, @RequestHeader Map<String, String> headers) {
-        HashMap<String, String> requestContext = new HashMap<>();
-        requestContext.putAll(headers);
-        requestContext.putAll(params);
+    @PostMapping("/variant")
+    public VariantResponse getVariant(@RequestBody String toggle, @RequestBody Map<String, String> requestContext) {
         UnleashContext context = buildContext(requestContext);
-        Variant v = unleash.getVariant(toggleName, context);
         return new VariantResponse(
-                toggleName,
-                v
+                toggle,
+                unleash.getVariant(toggle, context),
+                requestContext
         );
     }
 

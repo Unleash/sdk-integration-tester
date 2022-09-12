@@ -41,7 +41,7 @@ describe.each([
       json: {
         toggle,
         context: {
-          userId: userId
+          userId
         }
       }
     })
