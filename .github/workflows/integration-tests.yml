@@ -12,15 +12,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server:
+          - https://node-sdk-test-server.herokuapp.com
+          - https://unleash-java-tester.herokuapp.com
+          - https://unleash-python-tester.herokuapp.com
     steps:
-      - run: echo "Should cache docker images"
+      - run: echo "Should cache docker images ${{ matrix.server }}"
   integration:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       matrix:
-        server: [ "latest", "4.14.5", "4.13"]
+        server: 
+          - latest
+#          - 4.14.5
+          - 4.13
         sdk: [
           {container: node, port: 3000},
           {container: python, port: 5000},
