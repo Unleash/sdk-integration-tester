@@ -26,7 +26,7 @@ jobs:
           cache: "npm"
       - run: yarn install
       - name: Setup unleash server
-        run: docker compose up -d postgres unleash-server initializer
+        run: UNLEASH_SERVER_VERSION=${{ matrix.server }} docker compose up -d postgres unleash-server initializer
       - name: Await initialization
         run: ./server/wait-container-exit.sh initializer
 
