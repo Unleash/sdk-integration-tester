@@ -15,19 +15,26 @@ jobs:
 
     strategy:
       matrix:
-        sdk-url:
-          [
-            "all",
-          ]
+        server: [ "latest" ]
+        sdk: [
+          { container: node, port: 3000 },
+          { container: java, port: 5100 },
+          { container: python, port: 5000 },
+        ]
 
     steps:
       - uses: actions/checkout@v3
-      - name: Test ${{ matrix.sdk-url }}
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
           cache: "npm"
       - run: yarn install
-      - run: docker version
-      - run: docker compose version
-      - run: ./run-tests.sh
+      - name: Setup unleash server
+        run: docker compose up -d postgres unleash-server initializer
+      - name: Await initialization
+        run: ./server/wait-container-exit.sh initializer
+      - name: Test ${{ matrix.sdk.container }} with ${{ matrix.server }}
+        run: ./server/run-test.sh ${{ matrix.sdk.container}} ${{ matrix.sdk.port}}
+      - name: Clean up
+        run: docker compose stop postgres unleash-server initializer
