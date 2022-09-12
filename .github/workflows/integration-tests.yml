@@ -10,22 +10,32 @@ on:
     branches: [main, gh-action]
 
 jobs:
-  build:
+  integration:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        server: [ "latest" ]
-        sdk: [
-          { container: node, port: 3000 },
-          { container: java, port: 5100 },
-          { container: python, port: 5000 },
-        ]
+        server: [ "latest", "4.14", "4.13"]
 
     steps:
       - uses: actions/checkout@v3
-      - uses: ${{ github.workspace }}/.github/workflows/unleash-server.yml
-      - name: Test ${{ matrix.sdk.container }} with ${{ matrix.server }}
-        run: ./server/run-test.sh ${{ matrix.sdk.container}} ${{ matrix.sdk.port}}
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "npm"
+      - run: yarn install
+      - name: Setup unleash server
+        run: docker compose up -d postgres unleash-server initializer
+      - name: Await initialization
+        run: ./server/wait-container-exit.sh initializer
+
+      - name: Test Node SDK with ${{ matrix.server }}
+        run: ./server/run-test.sh node 3000
+      - name: Test Python SDK with ${{ matrix.server }}
+        run: ./server/run-test.sh python 5000
+      - name: Test Java SDK with ${{ matrix.server }}
+        run: ./server/run-test.sh java 5100
+
       - name: Clean up
         run: docker compose stop postgres unleash-server initializer
