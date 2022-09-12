@@ -11,7 +11,7 @@ COPY src /javatester/src
 
 RUN ./gradlew bootJar
 
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
