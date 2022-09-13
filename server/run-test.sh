@@ -10,5 +10,5 @@ while ! curl -s -o /dev/null ${SDK_URL}; do
     echo "Waiting ${SDK_URL}"
     sleep 1
 done
-SDK_URL=${SDK_URL} yarn test
+SDK_URL=${SDK_URL} yarn jest
 docker compose stop ${CONTAINER} &
