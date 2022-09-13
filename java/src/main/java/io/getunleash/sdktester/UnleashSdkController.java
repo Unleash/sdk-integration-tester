@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -27,41 +26,45 @@ public class UnleashSdkController {
         return new ReadyStatus("ok");
     }
 
-    public UnleashContext buildContext(Map<String, String> params) {
+    public UnleashContext buildContext(Map<String, Object> params) {
         UnleashContext.Builder builder = UnleashContext.builder()
                 .currentTime(ZonedDateTime.now());
-        if (params == null) {
-            params = new HashMap<>();
+        if (params != null) {
+            if (params.containsKey("Host")) {
+                builder = builder.remoteAddress((String) params.get("Host"));
+            }
+            if (params.containsKey("userId")) {
+                builder = builder.userId((String) params.get("userId"));
+            }
+            if (params.containsKey("appName")) {
+                builder = builder.appName((String) params.get("appName"));
+            }
+            if (params.containsKey("environment")) {
+                builder = builder.environment((String) params.get("environment"));
+            }
+            if (params.containsKey("remoteAddress")) {
+                builder = builder.remoteAddress((String) params.get("remoteAddress"));
+            }
+            if (params.containsKey("sessionId")) {
+                builder = builder.sessionId((String) params.get("sessionId"));
+            }
+            if (params.containsKey("currentTime")) {
+                builder = builder.currentTime(ZonedDateTime.parse((String) params.get("currentTime")));
+            }
+            if (params.containsKey("currentTime")) {
+                builder = builder.currentTime(ZonedDateTime.parse((String) params.get("currentTime")));
+            }
+            if (params.containsKey("properties")) {
+                ((Map<String, String>) params.get("properties")).forEach(builder::addProperty);
+            }
         }
-        if (params.containsKey("Host")) {
-            builder = builder.remoteAddress(params.get("Host"));
-        }
-        if (params.containsKey("userId")) {
-            builder = builder.userId(params.get("userId"));
-        }
-        if (params.containsKey("appName")) {
-            builder = builder.appName(params.get("appName"));
-        }
-        if (params.containsKey("environment")) {
-            builder = builder.environment(params.get("environment"));
-        }
-        if (params.containsKey("remoteAddress")) {
-            builder = builder.remoteAddress(params.get("remoteAddress"));
-        }
-        if (params.containsKey("sessionId")) {
-            builder = builder.sessionId(params.get("sessionId"));
-        }
-        if (params.containsKey("currentTime")) {
-            builder = builder.currentTime(ZonedDateTime.parse(params.get("currentTime")));
-        }
-        params.forEach(builder::addProperty);
         return builder.build();
     }
 
     @PostMapping("/is-enabled")
     public IsEnabled isEnabled(@RequestBody io.getunleash.sdktester.RequestBody body) {
         String toggle = body.toggle;
-        Map<String, String> requestContext = body.context;
+        Map<String, Object> requestContext = body.context;
         UnleashContext context = buildContext(requestContext);
         return new IsEnabled(
                 toggle,
@@ -73,7 +76,7 @@ public class UnleashSdkController {
     @PostMapping("/variant")
     public VariantResponse getVariant(@RequestBody io.getunleash.sdktester.RequestBody body) {
         String toggle = body.toggle;
-        Map<String, String> requestContext = body.context;
+        Map<String, Object> requestContext = body.context;
         UnleashContext context = buildContext(requestContext);
         return new VariantResponse(
                 toggle,
