@@ -22,7 +22,6 @@ public class UnleashSdkTesterConfig {
 
     @Bean
     public UnleashConfig unleashConfig() {
-        System.out.println(unleashUrl + " " + unleashApiKey);
         return UnleashConfig.builder()
                 .appName("sdk-tester-java")
                 .unleashAPI(unleashUrl)
