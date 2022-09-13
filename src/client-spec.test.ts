@@ -67,6 +67,9 @@ const parseResult = (variantResult: VariantResult) => {
   let result = { name, enabled, payload }
   // This handles a case where the Java SDK sends a payload with a null value, where we are not expecting a payload at all in that case
   if (payload?.value === null) {
+    console.warn(
+      `${SDK_LABEL}: Payload value is null, removing payload from result`
+    )
     result = { name, enabled, payload: undefined }
   }
   return result
