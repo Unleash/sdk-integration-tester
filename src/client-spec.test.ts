@@ -5,6 +5,7 @@ const URL = process.env.SDK_URL || 'http://localhost:3000'
 const UNLEASH_URL = process.env.UNLEASH_URL || 'http://localhost:4242'
 const UNLEASH_TOKEN =
   process.env.UNLEASH_TOKEN || '*:*.unleash-insecure-admin-api-token'
+const SDK_LABEL = process.env.SDK_LABEL || 'NodeJS'
 
 interface IVariantTest {
   description: string
@@ -86,7 +87,7 @@ specs
     // eslint-disable-next-line
     const definition: ISpecDefinition = require(`@unleash/client-specification/specifications/${testName}`)
 
-    describe(`${testName}`, () => {
+    describe(`${SDK_LABEL}:${testName}`, () => {
       // TODO: we need to make sure state is set correctly before running the tests below
       // TODO: we should clear state between each spec run
       beforeAll(async () => {

@@ -1,9 +1,9 @@
 {
   "scripts": {
     "test": "yarn test:node && yarn test:java && yarn test:python",
-    "test:node": "SDK_URL=http://localhost:3000 jest",
-    "test:java": "SDK_URL=http://localhost:5100 jest",
-    "test:python": "SDK_URL=http://localhost:5001 jest"
+    "test:node": "SDK_URL=http://localhost:3000 SDK_LABEL=NodeJS jest",
+    "test:java": "SDK_URL=http://localhost:5100 SDK_LABEL=Java jest",
+    "test:python": "SDK_URL=http://localhost:5001 SDK_LABEL=Python jest"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
