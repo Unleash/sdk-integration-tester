@@ -32,7 +32,7 @@ jobs:
           - 4.13
         sdk: [
           {container: node, port: 3000, label: 'NodeJS'},
-          {container: python, port: 5000, label: 'Python'},
+          {container: python, port: 5001, label: 'Python'},
           {container: java, port: 5100, label: 'Java'},
         ]
 
