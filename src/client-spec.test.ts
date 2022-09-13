@@ -75,11 +75,14 @@ const parseResult = (variantResult: VariantResult) => {
 // Currently excluded because we cannot set the state:
 const excludeTests = [
   '09', // Needs state to be cleared before running
-  '12', // Fails on Python - Not supported on this SDK?
   '13', // NOT_A_VALID_OPERATOR - OpenAPI validation
   '14', // Cannot read properties of undefined (reading 'map')
   '15' // "segments[0].name" is required
 ]
+
+if (SDK_LABEL === 'Python') {
+  excludeTests.push('12') // Fails on Python - Not supported on this SDK?
+}
 
 specs
   .filter(spec => !excludeTests.includes(spec.slice(0, 2)))
