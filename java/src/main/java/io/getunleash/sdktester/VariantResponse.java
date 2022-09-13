@@ -2,5 +2,7 @@ package io.getunleash.sdktester;
 
 import io.getunleash.Variant;
 
-public record VariantResponse(String name, Variant variant) {
+import java.util.Map;
+
+public record VariantResponse(String name, Variant enabled, Map<String, Object> context) {
 }

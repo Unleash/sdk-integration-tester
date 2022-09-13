@@ -21,9 +21,9 @@ services:
   python:
     build: ./python
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
-      - PORT=5000
+      - PORT=5001
       - UNLEASH_URL=http://unleash-server:4242/api
       - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
 
