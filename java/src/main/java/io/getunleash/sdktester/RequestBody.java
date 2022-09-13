@@ -2,8 +2,5 @@ package io.getunleash.sdktester;
 
 import java.util.Map;
 
-class RequestBody {
-    public String toggle;
-    public Map<String, Object> context;
-
+record RequestBody (String toggle, Map<String, Object> context) {
 }

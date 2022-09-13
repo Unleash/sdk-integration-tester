@@ -3,6 +3,8 @@ package io.getunleash.sdktester;
 
 import io.getunleash.Unleash;
 import io.getunleash.UnleashContext;
+import io.getunleash.Variant;
+import io.getunleash.variant.Payload;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,8 +65,8 @@ public class UnleashSdkController {
 
     @PostMapping("/is-enabled")
     public IsEnabled isEnabled(@RequestBody io.getunleash.sdktester.RequestBody body) {
-        String toggle = body.toggle;
-        Map<String, Object> requestContext = body.context;
+        String toggle = body.toggle();
+        Map<String, Object> requestContext = body.context();
         UnleashContext context = buildContext(requestContext);
         return new IsEnabled(
                 toggle,
@@ -75,12 +77,17 @@ public class UnleashSdkController {
 
     @PostMapping("/variant")
     public VariantResponse getVariant(@RequestBody io.getunleash.sdktester.RequestBody body) {
-        String toggle = body.toggle;
-        Map<String, Object> requestContext = body.context;
+        String toggle = body.toggle();
+        Map<String, Object> requestContext = body.context();
         UnleashContext context = buildContext(requestContext);
+        Variant variant = unleash.getVariant(toggle, context);
+        // workaround to fix unleash.getVariant
+        if (!variant.isEnabled()) {
+            variant = new Variant(variant.getName(), (Payload) null, variant.isEnabled());
+        }
         return new VariantResponse(
                 toggle,
-                unleash.getVariant(toggle, context),
+                variant,
                 requestContext
         );
     }
