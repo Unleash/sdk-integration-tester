@@ -1,5 +1,14 @@
 import specs from '@unleash/client-specification/specifications/index.json'
 import got from 'got'
+const instance = got.extend({
+	hooks: {
+		beforeRequest: [
+			options => {
+				console.log("Calling", options.method, options.url.href)
+			}
+		]
+	}
+});
 
 const URL = process.env.SDK_URL || 'http://localhost:3000'
 const UNLEASH_URL = process.env.UNLEASH_URL || 'http://localhost:4242'
@@ -97,7 +106,7 @@ specs
       // TODO: we need to make sure state is set correctly before running the tests below
       // TODO: we should clear state between each spec run
       beforeAll(async () => {
-        const { statusCode } = await got.post(
+        const { statusCode } = await instance.post(
           `${UNLEASH_URL}/api/admin/state/import`,
           {
             headers: {
@@ -112,7 +121,7 @@ specs
       if (definition.tests) {
         definition.tests.forEach(testCase => {
           test(`${testName}:${testCase.description}`, async () => {
-            const { body, statusCode } = await got.post(`${URL}/is-enabled`, {
+            const { body, statusCode } = await instance.post(`${URL}/is-enabled`, {
               json: {
                 toggle: testCase.toggleName,
                 context: testCase.context
@@ -128,7 +137,7 @@ specs
       if (definition.variantTests) {
         definition.variantTests.forEach(testCase => {
           test(`${testName}:${testCase.description}`, async () => {
-            const { body, statusCode } = await got.post(`${URL}/variant`, {
+            const { body, statusCode } = await instance.post(`${URL}/variant`, {
               json: {
                 toggle: testCase.toggleName,
                 context: testCase.context

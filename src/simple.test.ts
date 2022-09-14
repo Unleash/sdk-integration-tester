@@ -1,5 +1,15 @@
 import got from 'got'
 
+const instance = got.extend({
+	hooks: {
+		beforeRequest: [
+			options => {
+				console.log("Calling", options.method, options.url.href)
+			}
+		]
+	}
+});
+
 const URL = process.env.SDK_URL || 'http://localhost:3000'
 
 declare enum PayloadType {
@@ -37,7 +47,7 @@ describe.each([
   test(`'${toggle}' should be ${
     enabled ? 'enabled' : 'disabled'
   } for userId=${userId}`, async () => {
-    const { body, statusCode } = await got.post(`${URL}/is-enabled`, {
+    const { body, statusCode } = await instance.post(`${URL}/is-enabled`, {
       json: {
         toggle,
         context: {
@@ -61,7 +71,7 @@ describe.each([
   { toggle: 'test-variant', userId: '444', variant: 'blue' }
 ])(`${URL}/variant`, ({ toggle, userId, variant }) => {
   test(`'${toggle}' should be ${variant} for userId=${userId}`, async () => {
-    const { body, statusCode } = await got.post(`${URL}/variant`, {
+    const { body, statusCode } = await instance.post(`${URL}/variant`, {
       json: {
         toggle,
         context: {

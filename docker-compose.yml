@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - UNLEASH_URL=http://unleash-server:4242/api
+      - UNLEASH_URL=${UNLEASH_URL:-http://unleash-server:4242/api}
       - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
 
   java:
@@ -15,7 +15,7 @@ services:
       - "5100:5100"
     environment:
       - PORT=5100
-      - UNLEASH_URL=http://unleash-server:4242/api
+      - UNLEASH_URL=${UNLEASH_URL:-http://unleash-server:4242/api}
       - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
 
   python:
@@ -24,8 +24,15 @@ services:
       - "5001:5001"
     environment:
       - PORT=5001
-      - UNLEASH_URL=http://unleash-server:4242/api
+      - UNLEASH_URL=${UNLEASH_URL:-http://unleash-server:4242/api}
       - UNLEASH_API_TOKEN=*:*.unleash-insecure-admin-api-token
+
+  unleash-edge:
+    build: unleash-on-the-edge # TODO we could refer to https://github.com/bricks-software/sdk-integration-tester.git#main
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./unleash-edge-config.yml:/unleash-edge/config.yml
 
   unleash-server:
     image: unleashorg/unleash-server:${UNLEASH_SERVER_VERSION:-latest}

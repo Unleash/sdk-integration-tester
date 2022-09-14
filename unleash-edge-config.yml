@@ -1,0 +1,16 @@
+unleashUrl: http://unleash-server:4242
+logLevel: debug
+apiTokens:
+  - '*:*.unleash-insecure-admin-api-token'
+  - 'test-server:development.unleash-insecure-api-token'
+
+tokenValidator:
+  allowDynamicTokens: true
+  schedule: '*/5 * * * * *'
+
+dataSource:
+  type: inmemory
+
+updater:
+  type: cron
+  schedule: '*/5 * * * * *'

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 CONTAINER=$1
 PORT=$2
 LABEL=$3
@@ -13,5 +13,5 @@ while ! curl -s -o /dev/null ${SDK_URL}; do
     echo "Waiting ${SDK_URL}"
     sleep 1
 done
-SDK_URL=${SDK_URL} SDK_LABEL=${SDK_LABEL} yarn jest
+SDK_URL=${SDK_URL} SDK_LABEL=${SDK_LABEL} yarn test:${CONTAINER}
 docker compose stop ${CONTAINER} &
