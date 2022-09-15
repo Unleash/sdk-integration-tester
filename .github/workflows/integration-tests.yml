@@ -37,10 +37,10 @@ jobs:
       - name: Setup unleash server
         run: UNLEASH_SERVER_VERSION=${{ matrix.server }} docker compose up -d postgres unleash-server
       - name: Await initialization
-        run: ./server/wait-unleash-server-has-token.sh
+        run: ./wait-unleash-server-has-token.sh
 
       - name: Test ${{ matrix.sdk.container }} SDK with ${{ matrix.server }}
-        run: ./server/run-test.sh ${{ matrix.sdk.container }} ${{ matrix.sdk.port }} ${{ matrix.sdk.label }}
+        run: ./run-test.sh ${{ matrix.sdk.container }} ${{ matrix.sdk.port }} ${{ matrix.sdk.label }}
 
       - name: Clean up
         run: docker compose stop postgres unleash-server
