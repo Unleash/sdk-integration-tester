@@ -10,17 +10,6 @@ on:
     - cron: '30 5 * * 1-5'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        server:
-          - https://node-sdk-test-server.herokuapp.com
-          - https://unleash-java-tester.herokuapp.com
-          - https://unleash-python-tester.herokuapp.com
-    steps:
-      - run: echo "Should cache docker images ${{ matrix.server }}"
   integration:
     runs-on: ubuntu-latest
 
