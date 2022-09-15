@@ -35,7 +35,7 @@ services:
       DATABASE_USERNAME: unleash_user
       DATABASE_PASSWORD: unleash.the.password
       DATABASE_SSL: false
-      INIT_CLIENT_API_TOKENS: "test-server:development.unleash-insecure-api-token"
+      INIT_CLIENT_API_TOKENS: "*:development.unleash-insecure-api-token"
       INIT_ADMIN_API_TOKENS: "*:*.unleash-insecure-admin-api-token"
       LOG_LEVEL: info
     ports: 
