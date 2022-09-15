@@ -46,12 +46,12 @@ jobs:
           cache: "npm"
       - run: yarn install
       - name: Setup unleash server
-        run: UNLEASH_SERVER_VERSION=${{ matrix.server }} docker compose up -d postgres unleash-server initializer
+        run: UNLEASH_SERVER_VERSION=${{ matrix.server }} docker compose up -d postgres unleash-server
       - name: Await initialization
-        run: ./server/wait-container-exit.sh initializer
+        run: ./server/wait-unleash-server-has-token.sh
 
       - name: Test ${{ matrix.sdk.container }} SDK with ${{ matrix.server }}
         run: ./server/run-test.sh ${{ matrix.sdk.container }} ${{ matrix.sdk.port }} ${{ matrix.sdk.label }}
 
       - name: Clean up
-        run: docker compose stop postgres unleash-server initializer
+        run: docker compose stop postgres unleash-server
