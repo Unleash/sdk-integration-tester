@@ -4,6 +4,7 @@ const URL = process.env.SDK_URL || 'http://localhost:3000'
 const UNLEASH_URL = process.env.UNLEASH_URL || 'http://localhost:4242'
 const UNLEASH_TOKEN =
   process.env.UNLEASH_TOKEN || '*:*.unleash-insecure-admin-api-token'
+const WAIT_SDK_REFRESH_MS=1200
 
 declare enum PayloadType {
   STRING = 'string'
@@ -54,7 +55,7 @@ describe.each([
       }
     )
     expect(statusCode).toBe(202)
-    await sleep(5000);
+    await sleep(WAIT_SDK_REFRESH_MS);
   })
 
   test(`'${toggle}' should be ${
@@ -96,7 +97,7 @@ describe.each([
       }
     )
     expect(statusCode).toBe(202)
-    await sleep(1200);
+    await sleep(WAIT_SDK_REFRESH_MS);
   })
 
   test(`'${toggle}' should be ${variant} for userId=${userId}`, async () => {
