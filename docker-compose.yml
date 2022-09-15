@@ -46,15 +46,6 @@ services:
       - ./server/start-unleash.sh:/start-unleash.sh
     command: /start-unleash.sh
 
-  initializer:
-    image: alpine/curl
-    depends_on:
-      - unleash-server
-    volumes:
-       - ./server/initial-state.json:/initial-state.json
-       - ./server/init.sh:/init.sh
-    command: /init.sh
-
   postgres:
     image: postgres:alpine3.15
     environment:
