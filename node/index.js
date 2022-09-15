@@ -12,7 +12,7 @@ const { Unleash } = require('unleash-client')
 const unleash = new Unleash({
   appName: 'node-test-server',
   url,
-  refreshInterval: 2000,
+  refreshInterval: 500,
   customHeaders: {
     Authorization: apiKey
   }

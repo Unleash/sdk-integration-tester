@@ -27,6 +27,7 @@ public class UnleashSdkTesterConfig {
                 .unleashAPI(unleashUrl)
                 .customHttpHeader("Authorization", unleashApiKey)
                 .synchronousFetchOnInitialisation(true)
+                .fetchTogglesInterval(1)
                 .build();
     }
 

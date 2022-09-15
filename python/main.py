@@ -14,6 +14,7 @@ client = UnleashClient(
     url=API_URL,
     app_name="python-test-server",
     custom_headers={"Authorization": API_KEY},
+    refresh_interval = 1
 )
 
 client.initialize_client()
