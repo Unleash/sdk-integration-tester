@@ -29,6 +29,10 @@ interface VariantResult {
   context: Map<string, string>
 }
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 describe.each([
   { toggle: 'test-on', userId: '123', enabled: true },
   { toggle: 'test-on', userId: '44', enabled: false },
@@ -50,6 +54,7 @@ describe.each([
       }
     )
     expect(statusCode).toBe(202)
+    await sleep(5000);
   })
 
   test(`'${toggle}' should be ${
@@ -91,6 +96,7 @@ describe.each([
       }
     )
     expect(statusCode).toBe(202)
+    await sleep(1200);
   })
 
   test(`'${toggle}' should be ${variant} for userId=${userId}`, async () => {

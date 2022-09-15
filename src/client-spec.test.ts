@@ -57,6 +57,10 @@ interface VariantResult {
   context: Map<string, string>
 }
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Needed because of slight inconsistencies in the results we get back from the different SDKs
 // We should probably fix the SDKs to return the same result type in the future...
 const parseResult = (variantResult: VariantResult) => {
@@ -107,6 +111,7 @@ specs
           }
         )
         expect(statusCode).toBe(202)
+        await sleep(1200);
       })
 
       if (definition.tests) {
