@@ -39,4 +39,4 @@ jobs:
           cache: "npm"
       - run: yarn install
       - name: Test against ${{ matrix.server }}
-        run: SERVER=${{ matrix.server }} yarn test client-spec
+        run: SERVER=${{ matrix.server }} yarn test:debug

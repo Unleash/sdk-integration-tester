@@ -81,8 +81,8 @@ class UnleashServerContainer extends ContainerInstance {
             .withHealthCheck({
                 test: `wget -q -O - --header='Authorization:${this.config.adminToken}' http://localhost:${this.getInternalPort()}/api/admin/api-tokens || exit 1`,
                 interval: 200,
-                timeout: 1000,
-                retries: 20,
+                timeout: 2000,
+                retries: 40,
                 startPeriod: 1000
             })
             .withWaitStrategy(Wait.forHealthCheck());
