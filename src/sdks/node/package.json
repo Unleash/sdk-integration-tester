@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "fastify": "^3.29.0",
+    "leekslazylogger-fastify": "^0.1.1",
     "unleash-client": "^3.13.4"
   }
 }

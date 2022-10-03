@@ -14,7 +14,7 @@ FROM python:3.10-alpine
 
 WORKDIR /pythontester
 
-COPY --from=builder --chown=unleashuser /opt/venv /opt/venv
+COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /pythontester /pythontester
 
 ENV PATH="/opt/venv/bin:$PATH"

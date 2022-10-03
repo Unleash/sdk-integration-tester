@@ -6,14 +6,15 @@ from os import getenv
 
 app = Flask(__name__)
 
-API_KEY = getenv("UNLEASH_API_TOKEN") or "test-server:default.8a090f30679be7254af997864d66b86e44dcfc5291916adff72a0fb5"
-API_URL = getenv("UNLEASH_URL") or "https://app.unleash-hosted.com/demo/api"
+API_KEY = getenv("UNLEASH_API_TOKEN")
+API_URL = getenv("UNLEASH_URL")
 port = getenv("PORT") or "5001"
 
 client = UnleashClient(
     url=API_URL,
     app_name="python-test-server",
     custom_headers={"Authorization": API_KEY},
+    refresh_interval = 1
 )
 
 client.initialize_client()

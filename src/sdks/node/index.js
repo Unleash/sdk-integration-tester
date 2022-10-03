@@ -1,11 +1,9 @@
 // Require the framework and instantiate it
-const fastify = require('fastify')({ logger: false })
+const fastify = require('fastify')({ logger: true })
 
-const PORT = process.env.PORT || process.env.HTTP_PORT || 3000
-const url = process.env.UNLEASH_URL || 'https://app.unleash-hosted.com/demo/api'
-const apiKey =
-  process.env.UNLEASH_API_TOKEN ||
-  'test-server:default.8a090f30679be7254af997864d66b86e44dcfc5291916adff72a0fb5'
+const PORT = process.env.PORT || 3000
+const url = process.env.UNLEASH_URL
+const apiKey = process.env.UNLEASH_API_TOKEN
 
 const { Unleash } = require('unleash-client')
 
@@ -44,7 +42,6 @@ fastify.get('/', async (req, reply) => {
   }
 })
 
-// TODO: implement in the other languages as well
 fastify.post('/is-enabled', async req => {
   const { toggle, context } = req.body
   return {
@@ -54,7 +51,6 @@ fastify.post('/is-enabled', async req => {
   }
 })
 
-// TODO: implement in the other languages as well
 fastify.post('/variant', async req => {
   const { toggle, context } = req.body
   return {
