@@ -14,7 +14,7 @@ class MockServerContainer extends ContainerInstance implements UnleashServerInte
     protected start(): Promise<StartedTestContainer> {
         let mockserver = new GenericContainer('mockserver/mockserver')
             .withEnv('MOCKSERVER_SERVER_PORT', this.getInternalPort().toString())
-            .withEnv('MOCKSERVER_LOG_LEVEL', 'TRACE')
+            .withEnv('MOCKSERVER_LOG_LEVEL', 'INFO')
             .withNetworkMode(this.network.getName())
             .withExposedPorts(this.getInternalPort())
             .withWaitStrategy(Wait.forLogMessage(`started on port: ${this.getInternalPort()}`));
