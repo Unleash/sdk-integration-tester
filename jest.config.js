@@ -2,7 +2,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testTimeout: 45 * 1000, // Set timeout to 45 seconds
+  testTimeout: 60 * 1000, // Set timeout to 60 seconds
   testPathIgnorePatterns : [
     "<rootDir>/unleash-on-the-edge" 
   ]
