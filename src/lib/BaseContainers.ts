@@ -23,9 +23,11 @@ export abstract class ContainerInstance implements ContainerInterface {
     protected network: StartedNetwork
     private instance?: StartedTestContainer
     private port: number
+    private restartMethod: RestartMethod
     constructor(port: number, options: ContainerOptions) {
         this.network = options.network
         this.port = port
+        this.restartMethod = options.restartMethod || RestartMethod.RESTART
     }
 
     getInstance() {
@@ -47,7 +49,12 @@ export abstract class ContainerInstance implements ContainerInterface {
     }
 
     async reset() {
-        await this.getInstance().restart()
+        if (this.restartMethod === RestartMethod.NEW_INSTANCE) {
+            this.instance = undefined
+            await this.initialize()
+        } else {
+            await this.getInstance().restart()
+        }
     }
 
     getInternalIpAddress() {
@@ -67,6 +74,10 @@ export abstract class ContainerInstance implements ContainerInterface {
 
 }
 
+export enum RestartMethod {
+    RESTART, NEW_INSTANCE
+}
 export interface ContainerOptions {
     network: StartedNetwork,
+    restartMethod?: RestartMethod
 }
