@@ -93,7 +93,6 @@ const excludeTests = [
 ]
 
 let config: TestConfiguration = {
-  serverImpl: process.env.SERVER,
   postgres:{
     image: 'postgres:alpine3.15',
     dbName: 'unleash',
