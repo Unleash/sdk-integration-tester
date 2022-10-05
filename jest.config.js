@@ -1,6 +1,10 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-  preset: 'ts-jest',
+  transform: {
+      "^.+\\.tsx?$": [
+        "@swc/jest"
+      ]
+    }
   testEnvironment: 'node',
   testTimeout: 100 * 1000, // Set timeout to 100 seconds
   testPathIgnorePatterns : [
