@@ -1,0 +1,11 @@
+adminToken: '*:*.unleash-insecure-admin-api-token'
+clientToken: '*:development.unleash-insecure-api-token'
+servers: 
+  - type: MockServer
+sdks:
+  - type: java
+    client: io.getunleash:unleash-client-java:5.1.0
+tests:
+  load: 
+    file: '@unleash/client-specification/specifications/index.json'
+    

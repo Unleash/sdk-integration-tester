@@ -10,6 +10,7 @@ import { ContainerOptions, ContainerInstance } from './BaseContainers'
 export interface SDKOptions extends ContainerOptions {
     unleashApiUrl: string, // example: http://localhost:4242/api
     apiToken: string,
+    sdkImpl?: string,
 }
 export abstract class SDKContainerInstance extends ContainerInstance {
     protected options: SDKOptions
@@ -44,8 +45,11 @@ export class SDKDockerfileContainer extends SDKContainerInstance {
 
     // conventional configuration that can be overriden if necessary
     protected async start() {
-        const container = await GenericContainer.fromDockerfile(this.buildContext, "Dockerfile")
-          .build();
+        let containerBuilder = GenericContainer.fromDockerfile(this.buildContext, "Dockerfile")
+        if (this.options.sdkImpl) {
+            containerBuilder = containerBuilder.withBuildArg('UNLEASH_CLIENT_IMPL', this.options.sdkImpl)
+        }
+        const container = await containerBuilder.build();
         let builder = container
             .withEnv('UNLEASH_URL', this.options.unleashApiUrl)
             .withEnv('UNLEASH_API_TOKEN', this.options.apiToken)

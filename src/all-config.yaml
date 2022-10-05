@@ -1,0 +1,26 @@
+adminToken: '*:*.unleash-insecure-admin-api-token'
+clientToken: '*:development.unleash-insecure-api-token'
+servers: 
+  - type: MockServer
+  - type: OSSServer
+    image: unleashorg/unleash-server:latest
+    postgresImage: postgres:alpine3.15
+sdks:
+  - type: node
+  - type: python
+    excluding:
+      - '12' # Fails on Python - Not supported on this SDK?
+  - type: java
+    name: java-client-v5
+    client: io.getunleash:unleash-client-java:5.1.0
+  - type: java
+    name: java-client-v6
+    client: io.getunleash:unleash-client-java:6.0.1
+tests:
+  load: 
+    file: '@unleash/client-specification/specifications/index.json'
+    excluding: 
+      - '09' # Needs state to be cleared before running
+      - '13' # NOT_A_VALID_OPERATOR - OpenAPI validation
+      - '14' # Cannot read properties of undefined (reading 'map')
+      - '15' # "segments[0].name" is required

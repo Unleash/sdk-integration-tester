@@ -5,7 +5,7 @@ import {
   Network,
   StartedNetwork,
 } from 'testcontainers';
-import { TestConfiguration } from './lib/Config'
+import { parseResult, TestConfiguration } from './lib/Config'
 import { ContainerInstance, UnleashServerInterface } from './lib/BaseContainers';
 
 const getDirectories = (source: string) =>
@@ -16,74 +16,6 @@ const getDirectories = (source: string) =>
 
 const sdks = process.env.SDK ? [process.env.SDK] : getDirectories('src/sdks')
 
-interface IVariantTest {
-  description: string
-  context: Record<string, any>
-  toggleName: string
-  expectedResult: {
-    name: string
-    payload: unknown
-    enabled: boolean
-  }
-}
-
-interface ISpecTest {
-  description: string
-  context: Record<string, any>
-  toggleName: string
-  expectedResult: boolean
-}
-
-interface ISpecDefinition {
-  name: string
-  state: Record<string, any>
-  tests: ISpecTest[]
-  variantTests: IVariantTest[]
-}
-
-declare enum PayloadType {
-  STRING = 'string'
-}
-
-interface Payload {
-  type: PayloadType
-  value: string
-}
-
-interface EnabledResult {
-  name: string
-  enabled: boolean
-  context: Map<string, string>
-}
-
-interface VariantResult {
-  name: string
-  enabled: {
-    name: string
-    enabled: boolean
-    payload?: Payload
-  }
-  context: Map<string, string>
-}
-
-// Needed because of slight inconsistencies in the results we get back from the different SDKs
-// We should probably fix the SDKs to return the same result type in the future...
-const parseResult = (sdk: string, variantResult: VariantResult) => {
-  // Destructured because some of the SDKs return extra properties we don't have on expectedResult:
-  // Python: weightType
-  // Java: stickiness
-  const { name, enabled, payload } = variantResult.enabled
-  let result = { name, enabled, payload }
-  // This handles a case where the Java SDK sends a payload with a null value, where we are not expecting a payload at all in that case
-  if (payload?.value === null) {
-    console.warn(
-      `${sdk}: Payload value is null, removing payload from result`
-    )
-    result = { name, enabled, payload: undefined }
-  }
-  return result
-}
-
 // Currently excluded because we cannot set the state:
 const excludeTests = [
   '09', // Needs state to be cleared before running
@@ -93,6 +25,7 @@ const excludeTests = [
 ]
 
 let config: TestConfiguration = {
+  serverImpl: process.env.SERVER,
   postgres:{
     image: 'postgres:alpine3.15',
     dbName: 'unleash',
