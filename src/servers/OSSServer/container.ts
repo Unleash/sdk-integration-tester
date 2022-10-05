@@ -113,9 +113,9 @@ export function create(config: TestConfiguration, options: ContainerOptions): Un
     let unleashServer = new UnleashServerContainer(config.unleash, 4242, options, dbConfig)
 
     let wrapper: UnleashServerInterface = {
-        async initialize() {
-            await postgres.initialize()
-            await unleashServer.initialize()
+        async start() {
+            await postgres.start()
+            return unleashServer.start()
         },
     
         async stop() {
