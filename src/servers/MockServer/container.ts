@@ -1,10 +1,10 @@
 import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
-import { ContainerOptions, ContainerInstance, UnleashServerInterface } from '../../lib/BaseContainers'
+import { ContainerOptions, UnleashServerInstance, UnleashServerInterface } from '../../lib/BaseContainers'
 import { TestConfiguration } from '../../lib/Config';
 import { mockServerClient } from 'mockserver-client'
 import { MockServerClient } from 'mockserver-client/mockServerClient';
 
-class MockServerContainer extends ContainerInstance implements UnleashServerInterface {
+class MockServerContainer extends UnleashServerInstance {
     private client?: MockServerClient
     private priority = 1
     constructor(options: ContainerOptions) {
