@@ -5,7 +5,7 @@ import {
 } from 'testcontainers';
 
 export interface ContainerLifecycle {
-    initialize(): Promise<void>
+    start(): Promise<StartedTestContainer>
     stop(): Promise<void>
     reset(): Promise<void>
 }
@@ -70,7 +70,7 @@ export abstract class ContainerInstance implements ContainerInterface {
         return this.getInstance().getMappedPort(this.port)
     }
 
-    protected abstract start(): Promise<StartedTestContainer>
+    abstract start(): Promise<StartedTestContainer>
 
 }
 

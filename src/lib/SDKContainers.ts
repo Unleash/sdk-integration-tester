@@ -44,7 +44,7 @@ export class SDKDockerfileContainer extends SDKContainerInstance {
     }
 
     // conventional configuration that can be overriden if necessary
-    protected async start() {
+    async start() {
         let containerBuilder = GenericContainer.fromDockerfile(this.buildContext, "Dockerfile")
         if (this.options.sdkImpl) {
             containerBuilder = containerBuilder.withBuildArg('UNLEASH_CLIENT_IMPL', this.options.sdkImpl)

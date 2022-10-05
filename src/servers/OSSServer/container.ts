@@ -13,7 +13,7 @@ class PostgresContainer extends ContainerInstance {
         this.config = config
     }
     
-    protected async start() {
+    async start() {
         const postgresContainer = new GenericContainer(this.config.image)
             .withEnv('POSTGRES_USER', this.config.user)
             .withEnv('POSTGRES_PASSWORD', this.config.password)
@@ -65,7 +65,7 @@ class UnleashServerContainer extends ContainerInstance {
         this.dbConfig = dbConfig
     }
 
-    protected async start() {
+    async start() {
         const container = new GenericContainer(this.config.image)
             .withEnv('DATABASE_HOST', await this.dbConfig.host())
             .withEnv('DATABASE_PORT', (await this.dbConfig.port()).toString())
