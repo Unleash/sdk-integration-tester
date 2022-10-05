@@ -4,6 +4,8 @@ servers:
   - type: MockServer
 sdks:
   - type: python
+  - type: node
+  - type: java
 tests:
   load: 
     file: '@unleash/client-specification/specifications/index.json'
