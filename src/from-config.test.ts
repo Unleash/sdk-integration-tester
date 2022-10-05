@@ -41,11 +41,10 @@ function parseConfig(server: OSSServerConfig | MockServerConfig): TestConfigurat
         adminToken: parsedConfig.adminToken,
       }
     }
-  } else if (server.type === 'MockServer') {
+  } else if (server.type === 'MockServer' || server.type === 'Edge') {
     // This is pointless, we should remove TestConfiguration
-    const ossServer = server as MockServerConfig
     config = {
-      serverImpl: ossServer.type,
+      serverImpl: server.type,
       postgres:{
         image: '',
         dbName: '',
@@ -67,7 +66,7 @@ function parseConfig(server: OSSServerConfig | MockServerConfig): TestConfigurat
 const tests: string[] = specs.filter(spec => !excludeTests.includes(spec.slice(0, 2)))
 
 describe.each(parsedConfig.servers)(`$type`, (server) => {
-  let unleashServer: UnleashServerInterface
+  let unleashServer: ContainerInstance & UnleashServerInterface
   let network: StartedNetwork
   let initialized = false
   let sdkContainers = new Map<string, ContainerInstance>()
