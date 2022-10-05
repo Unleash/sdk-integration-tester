@@ -1,11 +1,20 @@
 import specs from '@unleash/client-specification/specifications/index.json'
 import got from 'got'
+import { readdirSync, existsSync } from 'fs'
+import {
+  Network,
+  StartedNetwork,
+} from 'testcontainers';
+import { TestConfiguration } from './lib/Config'
+import { ContainerInstance, UnleashServerInterface } from './lib/BaseContainers';
 
-const URL = process.env.SDK_URL || 'http://localhost:3000'
-const UNLEASH_URL = process.env.UNLEASH_URL || 'http://localhost:4242'
-const UNLEASH_TOKEN =
-  process.env.UNLEASH_TOKEN || '*:*.unleash-insecure-admin-api-token'
-const SDK_LABEL = process.env.SDK_LABEL || 'NodeJS'
+const getDirectories = (source: string) =>
+  readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .filter(dirent => existsSync(`${source}/${dirent.name}/container.ts`))
+    .map(dirent => dirent.name)
+
+const sdks = process.env.SDK ? [process.env.SDK] : getDirectories('src/sdks')
 
 interface IVariantTest {
   description: string
@@ -59,7 +68,7 @@ interface VariantResult {
 
 // Needed because of slight inconsistencies in the results we get back from the different SDKs
 // We should probably fix the SDKs to return the same result type in the future...
-const parseResult = (variantResult: VariantResult) => {
+const parseResult = (sdk: string, variantResult: VariantResult) => {
   // Destructured because some of the SDKs return extra properties we don't have on expectedResult:
   // Python: weightType
   // Java: stickiness
@@ -68,7 +77,7 @@ const parseResult = (variantResult: VariantResult) => {
   // This handles a case where the Java SDK sends a payload with a null value, where we are not expecting a payload at all in that case
   if (payload?.value === null) {
     console.warn(
-      `${SDK_LABEL}: Payload value is null, removing payload from result`
+      `${sdk}: Payload value is null, removing payload from result`
     )
     result = { name, enabled, payload: undefined }
   }
@@ -83,63 +92,101 @@ const excludeTests = [
   '15' // "segments[0].name" is required
 ]
 
-if (SDK_LABEL === 'Python') {
-  excludeTests.push('12') // Fails on Python - Not supported on this SDK?
+let config: TestConfiguration = {
+  postgres:{
+    image: 'postgres:alpine3.15',
+    dbName: 'unleash',
+    user: 'unleash_user',
+    password: 'unleash.the.password',
+  },
+  unleash: {
+    image: 'unleashorg/unleash-server:latest',
+    clientToken: '*:development.unleash-insecure-api-token',
+    adminToken: '*:*.unleash-insecure-admin-api-token',
+  }
 }
 
-specs
-  .filter(spec => !excludeTests.includes(spec.slice(0, 2)))
-  .forEach(testName => {
-    // eslint-disable-next-line
-    const definition: ISpecDefinition = require(`@unleash/client-specification/specifications/${testName}`)
+let unleashServer: UnleashServerInterface
+let network: StartedNetwork
+let initialized = false
+let sdkContainers = new Map<string, ContainerInstance>()
 
-    describe(`${SDK_LABEL}:${testName}`, () => {
-      // TODO: we need to make sure state is set correctly before running the tests below
-      // TODO: we should clear state between each spec run
-      beforeAll(async () => {
-        const { statusCode } = await got.post(
-          `${UNLEASH_URL}/api/admin/state/import`,
-          {
-            headers: {
-              Authorization: UNLEASH_TOKEN
-            },
-            json: definition.state
-          }
-        )
-        expect(statusCode).toBe(202)
-      })
+describe.each(specs.filter(spec => !excludeTests.includes(spec.slice(0, 2))))
+(`%s suite`, (testName) => {
+  // eslint-disable-next-line
+  const definition: ISpecDefinition = require(`@unleash/client-specification/specifications/${testName}`)
 
-      if (definition.tests) {
-        definition.tests.forEach(testCase => {
-          test(`${testName}:${testCase.description}`, async () => {
-            const { body, statusCode } = await got.post(`${URL}/is-enabled`, {
-              json: {
-                toggle: testCase.toggleName,
-                context: testCase.context
-              }
-            })
-            expect(statusCode).toBe(200)
-            const result: EnabledResult = JSON.parse(body)
-            expect(result.enabled).toBe(testCase.expectedResult)
-          })
-        })
-      }
+  beforeAll(async () => {
+    if (!initialized){
+      console.log(`===== Initializing Unleash ${definition.name} =====`)
+      network = await new Network().start()
+      unleashServer = require('./servers/index').create(config, network)
+      await unleashServer.initialize()
+      initialized = true
+    } else {
+      console.log(`===== Reseting Unleash before ${definition.name} =====`)
+      await unleashServer.reset()
+    }
 
-      if (definition.variantTests) {
-        definition.variantTests.forEach(testCase => {
-          test(`${testName}:${testCase.description}`, async () => {
-            const { body, statusCode } = await got.post(`${URL}/variant`, {
-              json: {
-                toggle: testCase.toggleName,
-                context: testCase.context
-              }
-            })
-            expect(statusCode).toBe(200)
-            const variantResult: VariantResult = JSON.parse(body)
-            const result = parseResult(variantResult)
-            expect(result).toEqual(testCase.expectedResult)
-          })
-        })
-      }
-    })
+    // ========= set unleash state (~50ms)
+    let succeed = await unleashServer.setState(definition.state)
+    expect(succeed).toBeTruthy()
   })
+    
+  describe.each(sdks)(`%s SDK`, (sdk) => {
+    if (sdk === 'python' && testName.slice(0, 2) === '12') {
+      return; // Fails on Python - Not supported on this SDK?
+    }
+    let sdkUrl: string
+    
+    beforeAll(async () => {
+      let sdkContainer = sdkContainers.get(sdk)
+      if (!sdkContainer) {
+        // console.log(`===== Initializing ${sdk} =====`)
+        let options = {
+          unleashApiUrl: `http://${unleashServer.getInternalIpAddress()}:${unleashServer.getInternalPort()}/api`,
+          apiToken: config.unleash.adminToken,
+          network: network
+        }
+        let { create } = require(`./sdks/${sdk}/container`)
+        sdkContainer = create(options) as ContainerInstance
+        await sdkContainer.initialize()
+        sdkContainers.set(sdk, sdkContainer)
+      } else {
+        // cleanup cached SDK state
+        // console.log(`===== Reseting state of ${sdk} =====`)
+        await sdkContainer.reset()
+      }
+      sdkUrl = `http://localhost:${sdkContainer.getMappedPort()}`
+    })
+
+    if (definition.tests) {
+      test.each(definition.tests)(`$description`, async (testCase) => {
+        const { body, statusCode } = await got.post(`${sdkUrl}/is-enabled`, {
+          json: {
+            toggle: testCase.toggleName,
+            context: testCase.context
+          }
+        })
+        expect(statusCode).toBe(200)
+        const result: EnabledResult = JSON.parse(body)
+        expect(result.enabled).toBe(testCase.expectedResult)
+      })
+    }
+
+    if (definition.variantTests) {
+      test.each(definition.variantTests)(`$description`, async (testCase) => {
+        const { body, statusCode } = await got.post(`${sdkUrl}/variant`, {
+          json: {
+            toggle: testCase.toggleName,
+            context: testCase.context
+          }
+        })
+        expect(statusCode).toBe(200)
+        const variantResult: VariantResult = JSON.parse(body)
+        const result = parseResult(sdk, variantResult)
+        expect(result).toEqual(testCase.expectedResult)
+      })
+    }
+  })
+})

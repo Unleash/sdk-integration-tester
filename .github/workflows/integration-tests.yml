@@ -4,23 +4,12 @@
 name: Integration tests
 
 on:
-  push:
+  # push:
   pull_request:
   schedule: 
     - cron: '30 5 * * 1-5'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        server:
-          - https://node-sdk-test-server.herokuapp.com
-          - https://unleash-java-tester.herokuapp.com
-          - https://unleash-python-tester.herokuapp.com
-    steps:
-      - run: echo "Should cache docker images ${{ matrix.server }}"
   integration:
     runs-on: ubuntu-latest
 
@@ -28,15 +17,8 @@ jobs:
       max-parallel: 10
       matrix:
         server: 
-          - latest
-#          - 4.14.5
-          - 4.13
-        sdk: [
-          {container: node, port: 3000, label: 'NodeJS'},
-          {container: python, port: 5001, label: 'Python'},
-          {container: java, port: 5100, label: 'Java'},
-        ]
-
+          - OSSServer
+          - MockServer
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -45,13 +27,5 @@ jobs:
           node-version: 16.x
           cache: "npm"
       - run: yarn install
-      - name: Setup unleash server
-        run: UNLEASH_SERVER_VERSION=${{ matrix.server }} docker compose up -d postgres unleash-server initializer
-      - name: Await initialization
-        run: ./server/wait-container-exit.sh initializer
-
-      - name: Test ${{ matrix.sdk.container }} SDK with ${{ matrix.server }}
-        run: ./server/run-test.sh ${{ matrix.sdk.container }} ${{ matrix.sdk.port }} ${{ matrix.sdk.label }}
-
-      - name: Clean up
-        run: docker compose stop postgres unleash-server initializer
+      - name: Test against ${{ matrix.server }}
+        run: SERVER=${{ matrix.server }} yarn test:debug

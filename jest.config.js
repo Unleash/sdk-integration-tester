@@ -1,6 +1,13 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-  preset: 'ts-jest',
+  transform: {
+      "^.+\\.tsx?$": [
+        "@swc/jest"
+      ]
+    },
   testEnvironment: 'node',
-  testTimeout: 30 * 1000 // Set timeout to 30 seconds to allow heroku enough time to start up
+  testTimeout: 100 * 1000, // Set timeout to 100 seconds
+  testPathIgnorePatterns : [
+    "<rootDir>/unleash-on-the-edge" 
+  ]
 };
