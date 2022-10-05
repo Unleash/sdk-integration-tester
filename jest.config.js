@@ -4,7 +4,7 @@ module.exports = {
       "^.+\\.tsx?$": [
         "@swc/jest"
       ]
-    }
+    },
   testEnvironment: 'node',
   testTimeout: 100 * 1000, // Set timeout to 100 seconds
   testPathIgnorePatterns : [
