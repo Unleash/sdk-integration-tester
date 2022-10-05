@@ -1,15 +1,13 @@
-FROM openjdk:17-slim AS builder
+FROM gradle:7.5.1 AS builder
 
 WORKDIR /javatester
 
 COPY gradle /javatester/gradle
 COPY build.gradle gradlew settings.gradle /javatester/
 
-RUN ./gradlew tasks
-
 COPY src /javatester/src
 
-RUN ./gradlew bootJar
+RUN gradle bootJar
 
 FROM openjdk:17-slim
 
