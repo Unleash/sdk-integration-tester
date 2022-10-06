@@ -25,4 +25,4 @@ jobs:
           cache: "npm"
       - run: yarn install
       - name: Test ${{ matrix.config }}
-        run: CONFIG=${{ matrix.config }} yarn test
+        run: CONFIG=${{ matrix.config }} yarn test from-config

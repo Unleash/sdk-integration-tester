@@ -6,6 +6,7 @@ sdks:
   - type: python
   - type: node
   - type: java
+  - type: go
 tests:
   load: 
     file: '@unleash/client-specification/specifications/index.json'

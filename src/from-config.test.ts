@@ -95,6 +95,9 @@ describe.each(tests)(`%s suite`, (testName) => {
   describe.each(sdks)(`$name SDK`, (sdkTestConfig) => {
     const excludedForSDK = sdkTestConfig.excluding || []
     if (excludedForSDK.filter(s => testName.startsWith(s)).length > 0) {
+      test(`Ignored test ${testName} for ${sdkTestConfig.type}`, () => {
+        expect(1).toBeGreaterThan(0)
+      })
       return;
     }
     let sdkUrl: string
