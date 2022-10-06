@@ -4,8 +4,7 @@ servers:
   - type: MockServer
 sdks:
   - type: java
-    client: io.getunleash:unleash-client-java:6.0.1
+    client: io.getunleash:unleash-client-java:6.1.0
 tests:
   load: 
     file: '@unleash/client-specification/specifications/index.json'
-    

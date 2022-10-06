@@ -16,7 +16,7 @@ sdks:
     client: io.getunleash:unleash-client-java:5.1.0
   - type: java
     name: java-client-v6
-    client: io.getunleash:unleash-client-java:6.0.1
+    client: io.getunleash:unleash-client-java:6.1.0
 tests:
   load: 
     file: '@unleash/client-specification/specifications/index.json'
