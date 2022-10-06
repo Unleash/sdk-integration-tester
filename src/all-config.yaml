@@ -7,6 +7,7 @@ servers:
     postgresImage: postgres:alpine3.15
 sdks:
   - type: node
+  - type: go
   - type: python
     excluding:
       - '12' # Fails on Python - Not supported on this SDK?
