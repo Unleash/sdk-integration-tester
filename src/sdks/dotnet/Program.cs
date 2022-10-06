@@ -50,7 +50,7 @@ app.MapPost("/variant", (IsEnabledBody body) =>
   };
 });
 
-app.Run();
+app.Run("http://*:" + port);
 
 class IsEnabledBody
 {
