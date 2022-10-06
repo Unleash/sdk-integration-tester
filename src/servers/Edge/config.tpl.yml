@@ -1,0 +1,15 @@
+unleashUrl: ${unleashUrl}
+apiTokens:
+  - "${apiToken}"
+
+logLevel: debug
+
+tokenValidator:
+  schedule: '*/5 * * * * *'
+
+dataSource:
+  type: inmemory
+
+updater:
+  type: cron
+  schedule: '*/5 * * * * *'

@@ -19,6 +19,7 @@ const unleash = new Unleash({
 let ready = false
 
 unleash.on('ready', () => {
+  console.log('Client is ready')
   ready = true
 })
 

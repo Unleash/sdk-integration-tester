@@ -1,0 +1,23 @@
+adminToken: '*:*.unleash-insecure-admin-api-token'
+clientToken: '*:development.unleash-insecure-api-token'
+servers: 
+  - type: Edge
+sdks:
+  # only running a subset of the tests for a quicker feedback loop
+  - type: node
+    excluding:
+      - '04'
+      - '05'
+      - '06'
+      - '07'
+      - '08'
+      - '09'
+      - '10'
+      - '11'
+      - '12'
+      - '13'
+      - '14'
+      - '15'
+tests:
+  load: 
+    file: '@unleash/client-specification/specifications/index.json'

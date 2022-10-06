@@ -40,17 +40,17 @@ describe('Test server containers', () => {
     config.serverImpl = serverImpl
     let unleash: UnleashServerInstance = require('./index').create(config, network)
     await unleash.initialize()
-    await unleash.setState({features: []})
+    await unleash.setState({features:[], version: 1})
     let response = await got.get(
-      `http://localhost:${unleash.getMappedPort()}/api/client/features`, 
-      {
-        headers: {
-          Authorization: config.unleash.adminToken,
-        },
-      }
-    )
-    expect(response.statusCode).toBe(200)
-    expect(JSON.parse(response.body).features).toEqual([])
+        `http://localhost:${unleash.getMappedPort()}/api/client/features`, 
+        {
+          headers: {
+            Authorization: config.unleash.adminToken,
+          },
+        }
+      )
+      expect(response.statusCode).toBe(200)
+      expect(JSON.parse(response.body).features).toEqual([])
     
     // most unleash server implementation will have some sort of cache this helps avoiding it
     await unleash.reset()
