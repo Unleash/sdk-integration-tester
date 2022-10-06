@@ -3,3 +3,6 @@ python/venv
 python/__pycache__
 .vscode/
 .idea
+bin
+obj
+.DS_Store

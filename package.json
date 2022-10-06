@@ -5,7 +5,8 @@
     "test:node": "SDK=node yarn jest",
     "test:java": "SDK=java yarn jest",
     "test:python": "SDK=python yarn jest",
-    "test:go": "SDK=go yarn jest"
+    "test:go": "SDK=go yarn jest",
+    "test:dotnet": "SDK=dotnet yarn jest"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",

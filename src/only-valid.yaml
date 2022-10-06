@@ -15,6 +15,7 @@ sdks:
   - type: go
     excluding:
       - '08'
+  - type: dotnet
 tests:
   load: 
     file: '@unleash/client-specification/specifications/index.json'

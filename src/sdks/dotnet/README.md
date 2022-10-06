@@ -1,0 +1,1 @@
+Currently using .NET SDK 6.0 - Minimal API template

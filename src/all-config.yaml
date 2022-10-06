@@ -8,6 +8,7 @@ servers:
 sdks:
   - type: node
   - type: go
+  - type: dotnet
   - type: python
     excluding:
       - '12' # Fails on Python - Not supported on this SDK?
