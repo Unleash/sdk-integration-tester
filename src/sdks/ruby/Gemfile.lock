@@ -1,0 +1,30 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    murmurhash3 (0.1.6)
+    mustermann (3.0.0)
+      ruby2_keywords (~> 0.0.1)
+    puma (3.12.6)
+    rack (2.2.4)
+    rack-protection (3.0.2)
+      rack
+    ruby2_keywords (0.0.5)
+    sinatra (3.0.2)
+      mustermann (~> 3.0)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.0.2)
+      tilt (~> 2.0)
+    tilt (2.0.11)
+    unleash (4.4.0)
+      murmurhash3 (~> 0.1.6)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  puma (~> 3.4)
+  sinatra (~> 3.0, >= 3.0.2)
+  unleash (~> 4.4)
+
+BUNDLED WITH
+   2.2.22
