@@ -31,7 +31,7 @@ const getDirectories = (source: string) =>
     
 const sdks = process.env.SDK? [process.env.SDK] : getDirectories('src/sdks')
 describe("SDK tests", () => {
-  let unleashServer: UnleashServerInterface
+  let unleashServer: ContainerInstance & UnleashServerInterface
   let network: StartedNetwork
 
   beforeEach(async () => {

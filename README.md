@@ -2,7 +2,7 @@
 - `yarn test`
 - `yarn test:debug`
 - `yarn test:node` (or `SDK=node yarn test:debug` for debugging)
-- `SERVER=OSSServer yarn test` (or `SERVER=OSSServer yarn test:debug`)
+- `CONFIG=all-against-mock yarn test` (or `CONFIG=all-against-mock yarn test:debug`)
 
 Note that many options can be combined. This is still a work in progress but as of today you can use SERVER to define the backend you want to use and SDK to pin one SDK implementation. Tests by default will run against all SDKs
 

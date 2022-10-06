@@ -3,7 +3,7 @@ import {
     GenericContainer,
     Wait,
 } from 'testcontainers';
-import { ContainerInstance, ContainerOptions, UnleashServerInterface } from '../../lib/BaseContainers'
+import { ContainerInstance, ContainerOptions, UnleashServerInstance, UnleashServerInstanceWrapper, UnleashServerInterface } from '../../lib/BaseContainers'
 import { PostgresConfig, TestConfiguration, UnleashConfig } from '../../lib/Config';
 
 class PostgresContainer extends ContainerInstance {
@@ -13,7 +13,7 @@ class PostgresContainer extends ContainerInstance {
         this.config = config
     }
     
-    protected async start() {
+    async start() {
         const postgresContainer = new GenericContainer(this.config.image)
             .withEnv('POSTGRES_USER', this.config.user)
             .withEnv('POSTGRES_PASSWORD', this.config.password)
@@ -56,7 +56,7 @@ interface DBConfiguration {
     password: string,
     ssl: boolean
 }
-class UnleashServerContainer extends ContainerInstance {
+class UnleashServerContainer extends UnleashServerInstance {
     private readonly dbConfig: DBConfiguration
     readonly config: UnleashConfig
     constructor(config: UnleashConfig, port: number, options:ContainerOptions, dbConfig: DBConfiguration) {
@@ -65,7 +65,7 @@ class UnleashServerContainer extends ContainerInstance {
         this.dbConfig = dbConfig
     }
 
-    protected async start() {
+    async start() {
         const container = new GenericContainer(this.config.image)
             .withEnv('DATABASE_HOST', await this.dbConfig.host())
             .withEnv('DATABASE_PORT', (await this.dbConfig.port()).toString())
@@ -89,15 +89,19 @@ class UnleashServerContainer extends ContainerInstance {
         return await container.start()
     }
 
-
-    async get(uri: string) {
-        if (!uri.startsWith('http')) {
-            uri = `http://localhost:${this.getInternalPort()}${uri}`
-        }
-        const cmd = `wget -q -O - --header 'Authorization:${this.config.adminToken}' ${uri}`
-        return this.getInstance().exec(cmd.split(' '))
+    // TODO can we convert `state` into a SQL query to Postgres?
+    async setState(state: Record<string, any>) {
+        const { statusCode } = await got.post(
+            `http://localhost:${this.getMappedPort()}/api/admin/state/import`,
+            {
+                headers: {
+                    Authorization: this.config.adminToken
+                },
+                json: state
+            }
+        )
+        return statusCode === 202
     }
-
 }
 
 export function create(config: TestConfiguration, options: ContainerOptions): UnleashServerInterface {
@@ -112,48 +116,5 @@ export function create(config: TestConfiguration, options: ContainerOptions): Un
     }
     let unleashServer = new UnleashServerContainer(config.unleash, 4242, options, dbConfig)
 
-    let wrapper: UnleashServerInterface = {
-        async initialize() {
-            await postgres.initialize()
-            await unleashServer.initialize()
-        },
-    
-        async stop() {
-            await unleashServer.stop()
-            await postgres.stop()
-        },
-    
-        async reset() {
-            await postgres.reset()
-            await unleashServer.reset()
-        },
-
-        getInternalIpAddress() {
-            return unleashServer.getInternalIpAddress()
-        },
-
-        getInternalPort() {
-            return unleashServer.getInternalPort()
-        },
-
-        getMappedPort() {
-            return unleashServer.getMappedPort()
-        },
-
-        // TODO can we convert `state` into a SQL query to Postgres?
-        async setState(state) {
-            const { statusCode } = await got.post(
-                `http://localhost:${unleashServer.getMappedPort()}/api/admin/state/import`,
-                {
-                    headers: {
-                        Authorization: unleashServer.config.adminToken
-                    },
-                    json: state
-                }
-            )
-            return statusCode === 202
-        },
-    }
-
-    return wrapper
+    return new UnleashServerInstanceWrapper(unleashServer, postgres)
 }

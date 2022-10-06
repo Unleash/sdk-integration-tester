@@ -2,7 +2,7 @@ import got from 'got'
 import { readdirSync, existsSync } from 'fs'
 import { TestConfiguration } from '../lib/Config'
 import { Network } from 'testcontainers';
-import { UnleashServerInterface } from '../lib/BaseContainers';
+import { UnleashServerInstance } from '../lib/BaseContainers';
 
 const getDirectories = (source: string) =>
   readdirSync(source, { withFileTypes: true })
@@ -38,7 +38,7 @@ describe('Test server containers', () => {
   it.each(servers)(`%s works`, async (serverImpl) => {
     let network = await new Network().start()
     config.serverImpl = serverImpl
-    let unleash: UnleashServerInterface = require('./index').create(config, network)
+    let unleash: UnleashServerInstance = require('./index').create(config, network)
     await unleash.initialize()
     await unleash.setState({features: []})
     let response = await got.get(
