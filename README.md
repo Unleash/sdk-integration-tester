@@ -35,6 +35,6 @@ export function create(
 ```
 
 ### SDK API
-Since SDKs we've defined an ad-hoc one that helps us test these SDKs by means of HTTP calls while these SDKs run inside a containeraized environment.
+Since SDKs we've defined an ad-hoc one that helps us test these SDKs by means of HTTP calls while these SDKs run inside a containerized environment.
 
 It's up to each SDK to implement this interface and properly use the SDK. This adds another layer of complexity, but helps us standardize the tests that have to talk to a single HTTP API rather than having to write tests in multiple languages
