@@ -28,7 +28,7 @@ const getDirectories = (source: string) =>
     .filter(dirent => dirent.isDirectory())
     .filter(dirent => existsSync(`${source}/${dirent.name}/container.ts`))
     .map(dirent => dirent.name)
-    
+
 const sdks = process.env.SDK? [process.env.SDK] : getDirectories('src/sdks')
 describe("SDK tests", () => {
   let unleashServer: UnleashServerInterface
@@ -48,7 +48,7 @@ describe("SDK tests", () => {
     // TODO: this is a global state defined for all tests and reseted before each
     // we need the state to be defined by the test either as a DB state or a json that can be imported
     const state = require(file)
-    
+
     await unleashServer.setState(state)
   }
 
