@@ -60,5 +60,9 @@ function getContext($body)
         ->setEnvironment($body['context']['environment'])
         ->setCurrentTime($body['context']['currentTime'])
         ->setSessionId($body['context']['sessionId']);
+    foreach($body['context']['properties'] as $key => $value) {
+        $context->setCustomProperty($key, $value);
+    }
+
     return $context;
 }

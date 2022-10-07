@@ -7,7 +7,7 @@ COPY . /usr/src/php-integration-tester
 WORKDIR /usr/src/php-integration-tester
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
+run composer install
 
 CMD [ "php", "-S", "0.0.0.0:5011", "index.php" ]
 EXPOSE 5011
