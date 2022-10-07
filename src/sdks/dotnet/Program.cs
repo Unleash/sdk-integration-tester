@@ -45,7 +45,7 @@ app.MapPost("/variant", (IsEnabledBody body) =>
   return new
   {
     name = body.toggle,
-    enabled = unleash.GetVariants(body.toggle, body.context).First(),
+    enabled = unleash.GetVariant(body.toggle, body.context, Unleash.Internal.Variant.DISABLED_VARIANT),
     context = body.context
   };
 });
