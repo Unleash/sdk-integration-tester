@@ -1,0 +1,13 @@
+adminToken: '*:*.unleash-insecure-admin-api-token'
+clientToken: '*:development.unleash-insecure-api-token'
+servers: 
+  - type: OSSServer
+sdks:
+  - type: dotnet
+tests:
+  load: 
+    file: '@unleash/client-specification/specifications/index.json'
+    excluding: 
+      - '13'
+      - '14'
+      - '15'
