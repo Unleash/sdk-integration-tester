@@ -1,13 +1,13 @@
 adminToken: '*:*.unleash-insecure-admin-api-token'
 clientToken: '*:development.unleash-insecure-api-token'
 servers: 
-  - type: MockServer
+  - type: OSSServer
 sdks:
-  - type: python
-  - type: node
-  - type: java
-  - type: go
   - type: dotnet
 tests:
   load: 
     file: '@unleash/client-specification/specifications/index.json'
+    excluding: 
+      - '13'
+      - '14'
+      - '15'
