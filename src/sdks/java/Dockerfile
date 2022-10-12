@@ -8,7 +8,7 @@ COPY build.gradle gradlew settings.gradle /javatester/
 COPY src /javatester/src
 
 ARG UNLEASH_CLIENT_IMPL
-RUN gradle -DunleashClientImpl=${UNLEASH_CLIENT_IMPL:-io.getunleash:unleash-client-java:6.0.1} bootJar
+RUN gradle -DunleashClientImpl=${UNLEASH_CLIENT_IMPL:-io.getunleash:unleash-client-java:6.1.0} bootJar
 
 FROM openjdk:17-slim
 
