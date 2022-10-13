@@ -1,6 +1,6 @@
 adminToken: '*:*.unleash-insecure-admin-api-token'
 clientToken: '*:development.unleash-insecure-api-token'
-servers: 
+servers:
   - type: MockServer
   - type: OSSServer
     image: unleashorg/unleash-server:latest
@@ -9,6 +9,7 @@ sdks:
   - type: node
   - type: go
   - type: dotnet
+  - type: rust
   - type: python
     excluding:
       - '12' # Fails on Python - Not supported on this SDK?
@@ -19,9 +20,9 @@ sdks:
     name: java-client-v6
     client: io.getunleash:unleash-client-java:6.1.0
 tests:
-  load: 
+  load:
     file: '@unleash/client-specification/specifications/index.json'
-    excluding: 
+    excluding:
       - '09' # Needs state to be cleared before running
       - '13' # NOT_A_VALID_OPERATOR - OpenAPI validation
       - '14' # Cannot read properties of undefined (reading 'map')

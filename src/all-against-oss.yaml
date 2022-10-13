@@ -1,6 +1,6 @@
 adminToken: '*:*.unleash-insecure-admin-api-token'
 clientToken: '*:development.unleash-insecure-api-token'
-servers: 
+servers:
   - type: OSSServer
     image: unleashorg/unleash-server:latest
     postgresImage: postgres:alpine3.15
@@ -10,6 +10,7 @@ sdks:
   - type: java
   - type: go
   - type: dotnet
+  - type: rust
 tests:
-  load: 
+  load:
     file: '@unleash/client-specification/specifications/index.json'
