@@ -7,6 +7,6 @@ COPY . /app
 RUN cargo build --release
 
 FROM debian:buster-slim
-RUN apt update && apt install -y libssl-dev libcurl4-openssl-dev
+RUN apt update && apt install -y libssl-dev libcurl4-openssl-dev wget
 COPY --from=builder /app/target/release/rust /
 CMD ["./rust"]
