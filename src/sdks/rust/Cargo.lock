@@ -1919,6 +1919,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "tokio",
  "unleash-api-client",
 ]
 

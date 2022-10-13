@@ -6,12 +6,12 @@ use actix_web::{
 use anyhow::Result;
 use enum_map::Enum;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env};
 use std::net::IpAddr;
 use std::str::FromStr;
-use unleash_api_client::{client, Client, Context};
+use std::{collections::HashMap, env};
 use unleash_api_client::client::Variant;
 use unleash_api_client::context::IPAddress;
+use unleash_api_client::{client, Client, Context};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ContextRes {
@@ -34,19 +34,21 @@ impl From<ContextRes> for Context {
         Context {
             user_id: c.user_id,
             session_id: c.session_id,
-            remote_address: c.remote_address.map(|r| IPAddress(IpAddr::from_str(r.as_str()).unwrap())),
+            remote_address: c
+                .remote_address
+                .map(|r| IPAddress(IpAddr::from_str(r.as_str()).unwrap())),
             properties: c.properties,
             app_name: c.app_name,
-            environment: c.environment
+            environment: c.environment,
         }
     }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct EnabledResponse{
+pub struct EnabledResponse {
     pub name: String,
     pub enabled: bool,
-    pub context: ContextRes
+    pub context: ContextRes,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -61,7 +63,7 @@ impl From<Variant> for VariantRes {
         VariantRes {
             name: v.name,
             payload: v.payload,
-            enabled: v.enabled
+            enabled: v.enabled,
         }
     }
 }
@@ -70,13 +72,13 @@ impl From<Variant> for VariantRes {
 pub struct VariantResponse {
     pub name: String,
     pub context: ContextRes,
-    pub enabled: VariantRes
+    pub enabled: VariantRes,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ToggleRequest {
     pub toggle: String,
-    pub context: ContextRes
+    pub context: ContextRes,
 }
 
 #[get("/ready")]
@@ -93,31 +95,54 @@ pub async fn base_url() -> Json<HashMap<String, String>> {
     Json(response)
 }
 
-fn toggle_is_enabled(client: &Client<UserFeatures, reqwest::Client>, name: String, context: Context) -> bool {
+fn toggle_is_enabled(
+    client: &Client<UserFeatures, reqwest::Client>,
+    name: String,
+    context: Context,
+) -> bool {
     client.is_enabled_str(name.as_str(), Some(&context), false)
 }
 
 #[post("/is-enabled")]
-pub async fn is_enabled(client: web::Data<Client<UserFeatures, reqwest::Client>>, request: Json<ToggleRequest>) -> Json<EnabledResponse> {
+pub async fn is_enabled(
+    client: web::Data<Client<UserFeatures, reqwest::Client>>,
+    request: Json<ToggleRequest>,
+) -> Json<EnabledResponse> {
     let req = request.into_inner();
     let response = EnabledResponse {
         name: req.toggle.clone(),
-        enabled: toggle_is_enabled(client.as_ref(), req.toggle.clone(), req.context.clone().into()),
-        context: req.context
+        enabled: toggle_is_enabled(
+            client.as_ref(),
+            req.toggle.clone(),
+            req.context.clone().into(),
+        ),
+        context: req.context,
     };
     Json(response)
 }
 
-fn get_variant(client: &Client<UserFeatures, reqwest::Client>, name: String, context: Context) -> Variant {
+fn get_variant(
+    client: &Client<UserFeatures, reqwest::Client>,
+    name: String,
+    context: Context,
+) -> Variant {
     client.get_variant_str(name.as_str(), &context)
 }
 #[post("/variant")]
-pub async fn variant(client: web::Data<Client<UserFeatures, reqwest::Client>>, request: Json<ToggleRequest>) -> Json<VariantResponse> {
+pub async fn variant(
+    client: web::Data<Client<UserFeatures, reqwest::Client>>,
+    request: Json<ToggleRequest>,
+) -> Json<VariantResponse> {
     let req = request.into_inner();
     let variant = VariantResponse {
         name: req.toggle.clone(),
         context: req.context.clone(),
-        enabled: get_variant(client.as_ref(), req.toggle.clone(), req.context.clone().into()).into()
+        enabled: get_variant(
+            client.as_ref(),
+            req.toggle.clone(),
+            req.context.clone().into(),
+        )
+        .into(),
     };
     Json(variant)
 }
@@ -140,8 +165,7 @@ async fn main() -> Result<(), anyhow::Error> {
         .parse()
         .unwrap();
 
-    let server = HttpServer::new(move || {
-        let client = client::ClientBuilder::default()
+    let client = client::ClientBuilder::default()
         .interval(500)
         .enable_string_features()
         .into_client::<UserFeatures, reqwest::Client>(
@@ -150,8 +174,17 @@ async fn main() -> Result<(), anyhow::Error> {
             instance_id,
             Some(api_key.clone()),
         ).expect("failed to init the rust client, this is fatal... because I don't feel like dealing with it");
+
+    let wrapped_client = web::Data::new(client);
+    let updater_ref = wrapped_client.clone();
+
+    tokio::spawn(async move {
+        updater_ref.poll_for_updates().await;
+    });
+
+    let server = HttpServer::new(move || {
         App::new()
-            .app_data(web::Data::new(client))
+            .app_data(wrapped_client.clone())
             .service(ready)
             .service(base_url)
             .service(variant)
