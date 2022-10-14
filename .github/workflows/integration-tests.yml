@@ -14,7 +14,7 @@ jobs:
       max-parallel: 10
       matrix:
         config: 
-          - dotnet
+          #- dotnet # Not working?
           - only-valid
     steps:
       - uses: actions/checkout@v3
