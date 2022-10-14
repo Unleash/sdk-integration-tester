@@ -43,13 +43,13 @@ function parseConfig(
     config = {
       serverImpl: ossServer.type,
       postgres: {
-        image: ossServer.postgresImage ?? 'postgres:alpine3.15',
+        image: ossServer.postgresImage,
         dbName: 'unleash',
         user: 'unleash_user',
         password: 'unleash.the.password'
       },
       unleash: {
-        image: ossServer.image ?? 'unleashorg/unleash-server:latest',
+        image: ossServer.image,
         clientToken: parsedConfig.clientToken,
         adminToken: parsedConfig.adminToken
       }
@@ -114,7 +114,11 @@ describe.each(servers)(`$type`, server => {
     describe.each(sdks)(`$name SDK`, sdkTestConfig => {
       const excludedForSDK = sdkTestConfig.excluding || []
       if (excludedForSDK.filter(s => testName.startsWith(s)).length > 0) {
-        return
+        // This is to have a better reporting when we exclude some things
+        test(`Ignored test ${testName} for ${sdkTestConfig.type}`, () => {
+          expect(1).toBeGreaterThan(0)
+        })
+        return;
       }
       let sdkUrl: string
 
