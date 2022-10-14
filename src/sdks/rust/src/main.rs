@@ -155,8 +155,8 @@ pub enum UserFeatures {
 
 #[actix_web::main]
 async fn main() -> Result<(), anyhow::Error> {
-    let api_key = env::var("API_KEY").expect("You need to set the API key, please");
-    let api_url = env::var("API_URL").expect("You need to set the Unleash URL, please");
+    let api_key = env::var("UNLEASH_API_TOKEN").expect("You need to set the API key, please");
+    let api_url = env::var("UNLEASH_URL").expect("You need to set the Unleash URL, please");
     let app_name = "rust-test-server";
     let instance_id = "rust-instance-id";
 
