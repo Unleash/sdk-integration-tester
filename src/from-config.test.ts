@@ -114,10 +114,11 @@ describe.each(servers)(`$type`, server => {
     describe.each(sdks)(`$name SDK`, sdkTestConfig => {
       const excludedForSDK = sdkTestConfig.excluding || []
       if (excludedForSDK.filter(s => testName.startsWith(s)).length > 0) {
-      test(`Ignored test ${testName} for ${sdkTestConfig.type}`, () => {
-        expect(1).toBeGreaterThan(0)
-      })
-      return;
+        // This is to have a better reporting when we exclude some things
+        test(`Ignored test ${testName} for ${sdkTestConfig.type}`, () => {
+          expect(1).toBeGreaterThan(0)
+        })
+        return;
       }
       let sdkUrl: string
 
