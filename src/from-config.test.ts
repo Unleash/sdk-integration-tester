@@ -76,6 +76,14 @@ function parseConfig(
   return config
 }
 
+function partition<T>(arr: T[], check: (o: T) => boolean): T[][] {
+  let initialValue: T[][] = [[], []]
+  return arr.reduce((result, element) => {
+    result[check(element) ? 0 : 1].push(element)
+    return result
+  }, initialValue)
+}
+
 const tests: string[] = specs.filter(
   spec => !excludeTests.includes(spec.slice(0, 2))
 )
@@ -113,13 +121,6 @@ describe.each(servers)(`$type`, server => {
 
     describe.each(sdks)(`$name SDK`, sdkTestConfig => {
       const excludedForSDK = sdkTestConfig.excluding || []
-      if (excludedForSDK.filter(s => testName.startsWith(s)).length > 0) {
-        // This is to have a better reporting when we exclude some things
-        test(`Ignored test ${testName} for ${sdkTestConfig.type}`, () => {
-          expect(1).toBeGreaterThan(0)
-        })
-        return;
-      }
       let sdkUrl: string
 
       beforeAll(async () => {
@@ -144,8 +145,11 @@ describe.each(servers)(`$type`, server => {
         sdkUrl = `http://localhost:${sdkContainer.getMappedPort()}`
       })
 
-      if (definition.tests) {
-        test.each(definition.tests)(`$description`, async testCase => {
+      const splitFn = (t: ITestDef) => excludedForSDK.filter(s => testName.startsWith(s) || t.description.startsWith(s)).length > 0
+      const [skip, evaluate] = partition(definition.tests || [], splitFn)
+      if (skip.length > 0) test.skip.each(skip)(`$description`, () => {});
+      if (evaluate.length > 0) {
+        test.each(evaluate)(`$description`, async testCase => {
           const { body, statusCode } = await got.post(`${sdkUrl}/is-enabled`, {
             json: {
               toggle: testCase.toggleName,
@@ -158,8 +162,10 @@ describe.each(servers)(`$type`, server => {
         })
       }
 
-      if (definition.variantTests) {
-        test.each(definition.variantTests)(`$description`, async testCase => {
+      const [skipVariants, evaluateVariants] = partition(definition.variantTests || [], splitFn)
+      if (skipVariants.length > 0) test.skip.each(skipVariants)(`$description`, () => {});
+      if (evaluateVariants.length > 0) {
+        test.each(evaluateVariants)(`$description`, async testCase => {
           const { body, statusCode } = await got.post(`${sdkUrl}/variant`, {
             json: {
               toggle: testCase.toggleName,

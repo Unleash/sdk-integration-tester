@@ -1,8 +1,12 @@
 
-interface IVariantTest {
+
+interface ITestDef {
     description: string
     context: Record<string, any>
     toggleName: string
+}
+
+interface IVariantTest extends ITestDef {
     expectedResult: {
         name: string
         payload: unknown
@@ -10,10 +14,7 @@ interface IVariantTest {
     }
 }
 
-interface ISpecTest {
-    description: string
-    context: Record<string, any>
-    toggleName: string
+interface ISpecTest extends ITestDef {
     expectedResult: boolean
 }
 
