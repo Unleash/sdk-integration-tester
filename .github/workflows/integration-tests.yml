@@ -13,8 +13,8 @@ jobs:
     strategy:
       max-parallel: 10
       matrix:
-        config: 
-          #- dotnet # Not working?
+        config:
+          - dotnet
           - only-valid
     steps:
       - uses: actions/checkout@v3

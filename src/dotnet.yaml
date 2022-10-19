@@ -2,6 +2,8 @@ adminToken: '*:*.unleash-insecure-admin-api-token'
 clientToken: '*:development.unleash-insecure-api-token'
 servers: 
   - type: OSSServer
+    image: unleashorg/unleash-server:latest
+    postgresImage: postgres:alpine3.15
 sdks:
   - type: dotnet
 tests:
