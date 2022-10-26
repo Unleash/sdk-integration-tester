@@ -4,7 +4,9 @@ GEM
     murmurhash3 (0.1.6)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
-    puma (3.12.6)
+    nio4r (2.5.8)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     rack (2.2.4)
     rack-protection (3.0.2)
       rack
@@ -22,7 +24,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  puma (~> 3.4)
+  puma (~> 4.3)
   sinatra (~> 3.0, >= 3.0.2)
   unleash (~> 4.4)
 
