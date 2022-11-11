@@ -13,8 +13,7 @@ jobs:
     strategy:
       max-parallel: 10
       matrix:
-        config:
-          - dotnet
+        yaml-spec:
           - only-valid
     steps:
       - uses: actions/checkout@v3
@@ -24,5 +23,5 @@ jobs:
           node-version: 16.x
           cache: "npm"
       - run: yarn install
-      - name: Test ${{ matrix.config }}
-        run: CONFIG=${{ matrix.config }} yarn test from-config
+      - name: Test ${{ matrix.yaml-spec }}
+        run: CONFIG=${{ matrix.yaml-spec }} yarn test from-config
