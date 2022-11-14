@@ -2,7 +2,7 @@ import specs from '@unleash/client-specification/specifications/index.json'
 import got from 'got'
 import YAML from 'yaml'
 import fs from 'fs'
-import { Network, StartedNetwork } from 'testcontainers'
+import { GenericContainer, Network, StartedNetwork } from 'testcontainers'
 import {
   MockServerConfig,
   OSSServerConfig,
@@ -13,6 +13,7 @@ import {
 import { ContainerInstance, UnleashServerInterface } from './lib/BaseContainers'
 import { SDKOptions } from './lib/SDKContainers'
 
+const path = require("path");
 const rawConfig = fs.readFileSync(
   `./src/${process.env.CONFIG || 'all-against-mock'}.yaml`,
   'utf8'
@@ -104,6 +105,26 @@ describe.each(servers)(`$type`, server => {
           `===== Initializing Unleash ${server.type} ${definition.name} =====`
         )
         network = await new Network().start()
+        
+        if (process.env.DEBUG) {
+          const ngrepContainer = await GenericContainer
+            .fromDockerfile(path.resolve('./src/tools/ngrep'), 'Dockerfile')
+            .build()
+          await ngrepContainer
+            .withNetworkMode("host") // bind to host network cause it will listen to docker bridged network
+            .withBindMount(path.resolve('.'), '/output')
+            .withCmd([
+              "-q", // Be quiet; don't output any information other than packet headers and their payloads (if relevant).
+              "-t", // Print a timestamp in the form of YYYY/MM/DD HH:MM:SS.UUUUUU everytime a packet is matched.
+              "-l", // Make stdout line buffered
+              "-Wbyline", // Specify alternate manner for displaying packets
+              `-dbr-${network.getId().slice(0, 12)}`, // listen to the bridge interface created for this network id
+              ".*HTTP.*", // match only HTTP
+              "/output/ngrep-http.out" // this last parameter will be used as output file
+            ])
+            .start()
+        }
+
         unleashServer = require('./servers/index').create(config, network)
         await unleashServer.initialize()
         initialized = true

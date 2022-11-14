@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# This scripts wraps ngrep to treat the last parameter as the output file
+set -x
+# ${@:1:$#-1} represents all args except the last one
+# ${@:$#} represents the last argument
+ngrep ${@:1:$#-1} > ${@:$#}

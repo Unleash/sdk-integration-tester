@@ -2,11 +2,17 @@
   "scripts": {
     "test": "yarn jest",
     "test:debug": "DEBUG=testcontainers* yarn jest",
+
     "test:node": "SDK=node yarn jest",
     "test:java": "SDK=java yarn jest",
     "test:python": "SDK=python yarn jest",
     "test:go": "SDK=go yarn jest",
-    "test:dotnet": "SDK=dotnet yarn jest"
+    "test:dotnet": "SDK=dotnet yarn jest",
+
+    "test:node:valid": "CONFIG=only-valid SDK=node yarn test from-config",
+    "test:java:valid": "CONFIG=only-valid SDK=java yarn test from-config",
+    "test:python:valid": "CONFIG=only-valid SDK=python yarn test from-config",
+    "test:go:valid": "CONFIG=only-valid SDK=go yarn test from-config"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
