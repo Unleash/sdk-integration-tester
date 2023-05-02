@@ -9,6 +9,7 @@ Note that many options can be combined. This is still a work in progress but as 
 # Ideas:
 * Each container needs to comply with a pre-defined API contract (this could be defined by OpenAPI, we don't need tests validating they comply because the main tests will fail anyway if they don't)
 
+
 ## Conventions
 ### Defining new components to test
 Inside `src` folder you'll find `sdks` and `servers`. Both allow us to run tests against different configuration setups. 
@@ -33,6 +34,13 @@ export function create(
         // define your implementation
 }
 ```
+
+### Building SDK containers
+
+All sdk tests should be capable of building a docker container:
+
+1. Go to the SDK directory `cd src/sdks/<sdk>`
+2. Run `docker build .`
 
 ### SDK API
 Since SDKs we've defined an ad-hoc one that helps us test these SDKs by means of HTTP calls while these SDKs run inside a containerized environment.
