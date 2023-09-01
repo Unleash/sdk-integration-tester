@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Unleash.Client" Version="2.2.0" />
+    <PackageReference Include="Unleash.Client" Version="3.3.0" />
   </ItemGroup>
 
 </Project>

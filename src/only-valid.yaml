@@ -17,6 +17,10 @@ sdks:
       - '15'
   - type: java
     client: io.getunleash:unleash-client-java:6.1.0
+  - type: java
+    client: io.getunleash:unleash-client-java:7.1.0
+  - type: java
+    client: io.getunleash:unleash-client-java:8.3.0
   - type: go
     excluding:
       - '08'
