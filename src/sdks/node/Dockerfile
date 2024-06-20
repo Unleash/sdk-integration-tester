@@ -1,11 +1,11 @@
-FROM node:16-alpine as builder
+FROM node:20-alpine as builder
 WORKDIR /unleash
 
 COPY package.json index.js /unleash/
 
 RUN yarn install --frozen-lockfile --production=true
 
-FROM node:16-alpine
+FROM node:20-alpine
 
 ENV NODE_ENV production
 
