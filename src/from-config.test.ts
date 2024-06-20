@@ -148,6 +148,7 @@ describe.each(servers)(`$type`, (server) => {
       const excludedForSDK = sdkTestConfig.excluding || [];
       let sdkUrl: string;
 
+      console.log(`${JSON.stringify(sdkTestConfig)}`);
       beforeAll(async () => {
         let sdkContainer = sdkContainers.get(sdkTestConfig.type);
         if (!sdkContainer) {
@@ -175,6 +176,7 @@ describe.each(servers)(`$type`, (server) => {
           (s) => testName.startsWith(s) || t.description.startsWith(s)
         ).length > 0;
       const [skip, evaluate] = partition(definition.tests || [], splitFn);
+      console.log(`=== ${definition.name} TO SKIP: ${JSON.stringify(skip)}`);
       if (skip.length > 0) test.skip.each(skip)(`$description`, () => {});
       if (evaluate.length > 0) {
         test.each(evaluate)(`$description`, async (testCase) => {

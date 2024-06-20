@@ -5,16 +5,6 @@ servers:
 sdks:
   - type: node
   - type: python
-    excluding:
-      - 'Feature.constraints.dual should be enabled in prod'
-      - 'Enabled in prod for userId=123'
-      - 'Feature.constraints.custom should be enabled in prod for norway'
-      - 'Feature.constraints.multi should be enabled in prod for user 2'
-      - 'Feature.constraints.list should be enabled in stage environment'
-      - 'Feature.constraints.simple should be enabled in dev environment'
-      - '12'
-      - '13'
-      - '15'
   - type: java
     client: io.getunleash:unleash-client-java:6.1.0
   - type: java
